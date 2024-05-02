@@ -1,0 +1,6 @@
+nome -> select
+bin -> text
+Urgenza -> select ( Rosso - 2 - red, Giallo - 1 - yellow, Verde - 0 - green )
+Descrizione -> text area
+Azienda -> select
+upload image -> optional
