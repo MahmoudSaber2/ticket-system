@@ -1,13 +1,13 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Form, Image } from "antd";
-import { message, Upload } from "antd";
-const { Dragger } = Upload;
+import { Form, Image, message, Upload } from "antd";
 
 import { TextInput, SelectInput, Buttons } from "../common";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { InboxOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.webp";
+const { Dragger } = Upload;
 
 const TicketForm = () => {
     const [form] = Form.useForm();
@@ -62,7 +62,7 @@ const TicketForm = () => {
 
     return (
         <Form
-            className="bg-white shadow-md p-5 rounded-lg w-full max-w-[800px] my-5"
+            className="my-5 w-full max-w-[800px] rounded-lg bg-white p-5 shadow-md"
             form={form}
             layout="vertical"
             onFinish={onFinish}>
@@ -76,7 +76,7 @@ const TicketForm = () => {
                 <h2 className="text-lg font-bold">Elmo tech</h2>
             </div>
 
-            <h1 className="text-2xl font-bold mb-5 text-center">Nuovo Ticket</h1>
+            <h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
 
             <div className="grid grid-cols-2 gap-4">{TicketsField}</div>
             <div className="flex flex-col gap-5">

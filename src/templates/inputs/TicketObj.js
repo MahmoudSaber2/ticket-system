@@ -3,9 +3,14 @@ export const TicketObj = () => {
 		{
 			name: "nome",
 			label: "Nome",
-			type: "text",
+			type: "select",
 			placeholder: "Inserisci il nome",
 			rules: { required: true, message: "Inserisci il nome" },
+			options: [
+				{ label: "Nero", value: 2 },
+				{ label: "Giallo", value: 1 },
+				{ label: "Verde", value: 0 },
+			]
 		},
 		{
 			name: "pin",

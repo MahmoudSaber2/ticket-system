@@ -97,3 +97,41 @@ body {
 .tox-statusbar {
 	display: none !important;
 }
+
+@layer base {
+	.danger {
+		@apply text-red-100 bg-red-500;
+	}
+
+	.success {
+		@apply text-green-100 bg-green-500;
+	}
+
+	.default {
+		@apply text-gray-100 bg-gray-500;
+	}
+
+	.warning {
+		@apply text-yellow-100 bg-yellow-500;
+	}
+
+	.draft {
+		@apply text-gray-100 bg-gray-500;
+	}
+
+	.grid-2 {
+		@apply grid grid-cols-1 lg:grid-cols-2 gap-3;
+	}
+
+	.grid-3 {
+		@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3;
+	}
+
+	.grid-4 {
+		@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3;
+	}
+
+	.uiContainerTitle {
+		@apply border-b-[1px] p-5 text-xl font-bold;
+	}
+}
