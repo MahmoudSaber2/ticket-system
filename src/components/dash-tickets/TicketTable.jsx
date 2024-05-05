@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Table, TableHeader, UiContainer } from "../../components/common";
+import { Modal, Table, TableHeader, UiContainer } from "../../components/common";
 import { useFilter, useTable } from "../../store";
 
 import { TicketColumnObj } from "../../templates/column/TicketColumnObj";
@@ -10,10 +10,16 @@ const TicketTable = () => {
     const { filterData } = useFilter();
     const { pagenation, setDetailsId, setPagenation } = useTable();
 
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [description, setDescription] = React.useState("");
+
     const { data: tickets, isLoading } = useTickets({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
 
     const deleteTicket = (id) => {};
-    const editClient = (id) => {};
+    const viewDesc = (desc) => {
+        setIsModalOpen(true);
+        setDescription(desc);
+    };
 
     return (
         <UiContainer>
@@ -29,10 +35,20 @@ const TicketTable = () => {
                 isPagination={true}
                 columns={TicketColumnObj({
                     deleteFunction: (id) => deleteTicket(id),
-                    editFunction: (id) => editClient(id),
+                    viewDesc: (desc) => viewDesc(desc),
                 })}
                 data={tickets}
             />
+
+            <Modal
+                isModalOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={"Descrizione"}>
+                <pre
+                    className="whitespace-pre-wrap text-xl font-bold"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                />
+            </Modal>
         </UiContainer>
     );
 };

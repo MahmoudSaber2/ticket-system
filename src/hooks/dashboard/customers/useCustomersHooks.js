@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery, useMutation, QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { sumErrors } from "../../../utils/Functions";
 
 export const useCustomes = (pagination, setPagination, resetParamPageId) => {
     const getCustomers = async () => {
@@ -42,7 +43,13 @@ export const useCreateCustomer = (closeModel) => {
             toast.success("Utente created successfully");
             closeModel();
         },
-        onError: () => toast.error("Utente not created"),
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
     });
 };
 
@@ -69,7 +76,13 @@ export const useUpdateCustomer = (closeModel) => {
             toast.success("Utente updated successfully");
             closeModel();
         },
-        onError: () => toast.error("Utente not updated"),
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
     });
 };
 
@@ -83,6 +96,12 @@ export const useDeleteCustomer = (refetch) => {
             toast.info("Utente deleted successfully");
             refetch();
         },
-        onError: () => toast.error("Utente not deleted"),
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
     });
 };

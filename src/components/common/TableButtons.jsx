@@ -5,6 +5,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { CiEdit, CiTrash } from "react-icons/ci";
 
 import { ConfirmModal } from "./global/ConfirmModal";
+import { FaEye } from "react-icons/fa";
 
 export const TableBtnsMenu = (changeStatus, status) => {
     return [
@@ -30,7 +31,7 @@ export const TableBtnsMenu = (changeStatus, status) => {
     ];
 };
 
-const TableButtons = ({ editRow, deleteRow, ...props }) => {
+const TableButtons = ({ editRow, deleteRow, show, ...props }) => {
     const [open, setOpen] = useState();
 
     return (
@@ -42,6 +43,16 @@ const TableButtons = ({ editRow, deleteRow, ...props }) => {
                         color="blue"
                         className="cursor-pointer"
                         onClick={() => editRow(props?.record)}
+                    />
+                )}
+            </div>
+            <div className="rounded bg-slate-200/20 p-[5px]">
+                {show && (
+                    <FaEye
+                        size={20}
+                        color="#4096ff"
+                        className="cursor-pointer"
+                        onClick={() => show()}
                     />
                 )}
             </div>

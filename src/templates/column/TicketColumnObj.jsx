@@ -1,36 +1,58 @@
 import { StatusBadge, TableButtons } from "../../components/common";
 
-export const TicketColumnObj = ({ deleteFunction, editFunction, changeStatus }) => {
+export const TicketColumnObj = ({ deleteFunction, viewDesc, changeStatus }) => {
     return [
         {
             key: "1",
-            title: "Nome",
-            dataIndex: "name",
+            title: "Ticket Numero",
+            dataIndex: "ticketNumber",
         },
         {
             key: "2",
+            title: "Nome",
+            dataIndex: "customerName",
+        },
+        {
+            key: "3",
             title: "Azienda",
             dataIndex: "companyName",
         },
         {
-            key: "3",
+            key: "4",
             title: "Descrizione",
             dataIndex: "description",
+            render: (value) => (
+                <div
+                    className="truncate"
+                    dangerouslySetInnerHTML={{ __html: value }}
+                />
+            ),
         },
         {
-            key: "4",
+            key: "5",
             title: "Urgenza",
+            dataIndex: "importance",
+            render: (value) => (
+                <StatusBadge
+                    statusCode={value}
+                    where={"isImportant"}
+                />
+            ),
+        },
+        {
+            key: "6",
+            title: "Stato",
             dataIndex: "status",
             render: (value) => <StatusBadge statusCode={value} />,
         },
         {
-            key: "5",
+            key: "7",
             title: "",
             render: (_, record) => {
                 return (
                     <TableButtons
                         deleteRow={deleteFunction}
-                        editRow={editFunction}
+                        show={() => viewDesc(record?.description)}
                         record={record?.key}
                         status={record?.status}
                         withStatus={false}

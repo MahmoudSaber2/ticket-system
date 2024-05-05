@@ -28,12 +28,20 @@ export const TicketObj = ({ customes, azienda }) => {
 			],
 		},
 		{
-			name: "branchId",
+			name: "companyId",
 			label: "Azienda",
 			type: "select",
 			placeholder: "Inserisci la azienda",
 			rules: { required: true, message: "Inserisci la azienda" },
 			options: azienda,
+		},
+		{
+			name: "branchId",
+			label: "Azienda",
+			type: "select",
+			placeholder: "Inserisci la azienda",
+			options: azienda,
+			hidden: true,
 		},
 		{
 			name: "attachments",

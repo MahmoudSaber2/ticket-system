@@ -1,15 +1,24 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export const useSelects = () => {
     const getSelects = async () => {
-        const { data } = await axios.get(`https://customerservicebe.testingelmo.com/api/v1/selects?allSelects=branches=1,companies,customers`);
+        const { data } = await axios.get(`https://customerservicebe.testingelmo.com/api/v1/selects?allSelects=companies,customers`);
         return data;
     };
-    
+
     return useQuery({
         queryKey: ["selects"],
         queryFn: getSelects,
-        refetchOnWindowFocus: false,
     });
-}
+};
+
+export const useSelects2 = (updateBranches) => {
+    return useMutation({
+        mutationFn: (value) => axios.get(`https://customerservicebe.testingelmo.com/api/v1/selects?allSelects=branches=${value}`),
+
+        onSuccess: (response) => {
+            updateBranches(response.data);
+        },
+    });
+};

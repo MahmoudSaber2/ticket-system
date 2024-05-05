@@ -7,8 +7,9 @@ import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { InboxOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.webp";
-import { useSelects } from "../../hooks/global/useSelectsHook";
+import { useSelects, useSelects2 } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
+import { useCreateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
 
 const { Dragger } = Upload;
 
@@ -16,7 +17,13 @@ const TicketForm = () => {
     const [form] = Form.useForm();
     const editorRef = useRef(null);
 
+    const [branches, setBranches] = React.useState([]);
+    // Hooks
+    const { mutate: getBranches } = useSelects2((values) => setBranches(values));
     const { data: selects, isLoading } = useSelects();
+    const { mutate: create, isPending } = useCreateTicket(() => form.resetFields());
+
+    const branch = GetOptions(branches, "branches")?.[0]?.value;
 
     const TicketsField = TicketObj({
         customes: GetOptions(selects, "customers") || [],
@@ -31,6 +38,8 @@ const TicketForm = () => {
                 hidden={field?.hidden}
                 rules={[field?.rules]}>
                 <Component
+                    allowClear
+                    onChange={field?.name === "companyId" ? (e) => getBranches(e) : undefined}
                     placeholder={field.placeholder}
                     size="large"
                     options={field?.options}
@@ -40,7 +49,14 @@ const TicketForm = () => {
     });
 
     const onFinish = (values) => {
-        console.log("Success:", values);
+        const updatedValues = {
+            ...values,
+            branchId: branch,
+            status: 0,
+        };
+        if (branch) {
+            create(updatedValues);
+        }
     };
 
     const props = {
@@ -49,6 +65,7 @@ const TicketForm = () => {
         showUploadList: true,
         listType: "picture",
         multiple: true,
+        fileList: form.getFieldValue("attachments"),
         beforeUpload(file) {
             const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
             if (!isJpgOrPng) {
@@ -62,7 +79,7 @@ const TicketForm = () => {
         },
         onChange(info) {
             form.setFieldValue(
-                "image",
+                "attachments",
                 info.fileList?.map((file) => file.originFileObj)
             );
         },
@@ -95,8 +112,8 @@ const TicketForm = () => {
                             // @ts-ignore
                             editorRef.current = editor;
                         }}
-                        onEditorChange={(content) => form.setFieldValue("descrizione", content)}
-                        initialValue={form.getFieldValue("descrizione")}
+                        onEditorChange={(content) => form.setFieldValue("description", content)}
+                        initialValue={form.getFieldValue("description")}
                         init={{
                             height: 280,
                             menubar: false,
@@ -137,6 +154,7 @@ const TicketForm = () => {
                     <Buttons
                         type="primary"
                         size="large"
+                        loading={isPending}
                         htmlType="submit">
                         SALVA
                     </Buttons>
