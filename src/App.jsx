@@ -8,7 +8,9 @@ import AxiosInterceptor from "./services/Axiosinterceptor";
 
 import "react-toastify/dist/ReactToastify.css";
 
-const router = createBrowserRouter([RootRoute, DashboardRoute, AuthRoute]);
+const router = createBrowserRouter([RootRoute, DashboardRoute, AuthRoute], {
+    basename: "/",
+});
 
 function App() {
     return (
