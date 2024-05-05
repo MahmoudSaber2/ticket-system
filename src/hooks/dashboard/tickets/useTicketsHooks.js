@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useTickets = (pagination, setPagination, resetParamPageId) => {
-    const getClients = async () => {
+    const getTickets = async () => {
         const response = await axios.get("admin/tickets", {
             params: {
                 page: pagination?.current,
@@ -14,18 +14,18 @@ export const useTickets = (pagination, setPagination, resetParamPageId) => {
         const {
             data: {
                 pagination: { total, per_page: pageSize, current_page: current },
-                result: { clients },
+                result: { tickets },
             },
         } = response;
 
         setPagination({ position: ["bottomLeft"], total, pageSize, current });
         resetParamPageId();
-        return clients.map((client) => ({ ...client, key: client.clientId }));
+        return tickets.map((ticket) => ({ ...ticket, key: ticket.ticketId }));
     };
 
     return useQuery({
-        queryKey: ["clients", pagination],
-        queryFn: () => getClients(),
+        queryKey: ["tickets", pagination],
+        queryFn: () => getTickets(),
         placeholderData: keepPreviousData,
     });
 };

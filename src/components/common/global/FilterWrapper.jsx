@@ -10,7 +10,7 @@ const FilterWrapper = ({ title, clearFilter, loading, children, withButtons = tr
             <h1 className="mb-4 flex items-center gap-2 text-xl font-bold">
                 <FilterOutlined /> {title}
             </h1>
-            <div className="grid grid-cols-3 gap-4">{children}</div>
+            <div className="grid grid-cols-4 gap-4">{children}</div>
             {withButtons && (
                 <div className="flex flex-wrap items-center justify-end gap-2">
                     <DefButton

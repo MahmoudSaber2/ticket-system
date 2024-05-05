@@ -33,3 +33,21 @@ export const TicketFilterInputs = ({ customes, azienda }) => {
         },
     ];
 };
+
+export const CustomerFilterInputs = ({ azienda }) => {
+    return [
+        {
+            name: "search",
+            label: "Cerca",
+            type: "text",
+            placeholder: "Cerca",
+        },
+        {
+            name: "company",
+            label: "Azienda",
+            type: "select",
+            placeholder: "Inserisci la azienda",
+            options: azienda,
+        },
+    ];
+};

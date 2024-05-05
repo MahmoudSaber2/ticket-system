@@ -3,17 +3,25 @@ import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Form, Image, message, Upload } from "antd";
 
-import { TextInput, SelectInput, Buttons } from "../common";
+import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { InboxOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.webp";
+import { useSelects } from "../../hooks/global/useSelectsHook";
+import { GetOptions } from "../../utils/Functions";
+
 const { Dragger } = Upload;
 
 const TicketForm = () => {
     const [form] = Form.useForm();
     const editorRef = useRef(null);
 
-    const TicketsField = TicketObj().map((field) => {
+    const { data: selects, isLoading } = useSelects();
+
+    const TicketsField = TicketObj({
+        customes: GetOptions(selects, "customers") || [],
+        azienda: GetOptions(selects, "companies") || [],
+    }).map((field) => {
         const Component = field.type === "text" ? TextInput : SelectInput;
         return (
             <Form.Item
@@ -62,74 +70,78 @@ const TicketForm = () => {
 
     return (
         <Form
-            className="my-5 w-full max-w-[800px] rounded-lg bg-white p-5 shadow-md"
+            className="my-5 w-full max-w-[800px] rounded-lg bg-white p-5"
             form={form}
             layout="vertical"
             onFinish={onFinish}>
-            <div className="flex items-center gap-3">
-                <Image
-                    src={logo}
-                    preview={false}
-                    className="max-w-8"
-                    alt="logo"
-                />
-                <h2 className="text-lg font-bold">Elmo tech</h2>
-            </div>
+            <UiContainer loading={isLoading}>
+                <div className="flex items-center gap-3">
+                    <Image
+                        src={logo}
+                        preview={false}
+                        className="max-w-8"
+                        alt="logo"
+                    />
+                    <h2 className="text-lg font-bold">Elmo tech</h2>
+                </div>
 
-            <h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
+                <h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
 
-            <div className="grid grid-cols-2 gap-4">{TicketsField}</div>
-            <div className="flex flex-col gap-5">
-                <Editor
-                    apiKey={"291fk9weadufle2zus63f63n0mrhi4fkyk6za2k25oi6ic18"}
-                    onInit={(evt, editor) => {
-                        // @ts-ignore
-                        editorRef.current = editor;
-                    }}
-                    onEditorChange={(content) => form.setFieldValue("descrizione", content)}
-                    initialValue={form.getFieldValue("descrizione")}
-                    init={{
-                        height: 280,
-                        menubar: false,
-                        plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "codesample",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                        ],
-                        toolbar:
-                            "undo redo | " +
-                            "codesample | bold italic forecolor | alignleft aligncenter |" +
-                            "alignright alignjustify | bullist numlist",
-                        content_style: "body { font-family:Inter; font-size:16px }",
-                    }}
-                />
-                <Dragger {...props}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">Carica le tue immagini o trascinali qui</p>
-                    <p className="ant-upload-hint">Per favore, carica tutte le immagini che illustrano il problema o la causa in modo dettagliato</p>
-                </Dragger>
+                <div className="grid grid-cols-2 gap-4">{TicketsField}</div>
+                <div className="flex flex-col gap-5">
+                    <Editor
+                        apiKey={"291fk9weadufle2zus63f63n0mrhi4fkyk6za2k25oi6ic18"}
+                        onInit={(evt, editor) => {
+                            // @ts-ignore
+                            editorRef.current = editor;
+                        }}
+                        onEditorChange={(content) => form.setFieldValue("descrizione", content)}
+                        initialValue={form.getFieldValue("descrizione")}
+                        init={{
+                            height: 280,
+                            menubar: false,
+                            plugins: [
+                                "advlist",
+                                "autolink",
+                                "lists",
+                                "link",
+                                "image",
+                                "charmap",
+                                "preview",
+                                "anchor",
+                                "searchreplace",
+                                "visualblocks",
+                                "codesample",
+                                "fullscreen",
+                                "insertdatetime",
+                                "media",
+                                "table",
+                            ],
+                            toolbar:
+                                "undo redo | " +
+                                "codesample | bold italic forecolor | alignleft aligncenter |" +
+                                "alignright alignjustify | bullist numlist",
+                            content_style: "body { font-family:Inter; font-size:16px }",
+                        }}
+                    />
+                    <Dragger {...props}>
+                        <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">Carica le tue immagini o trascinali qui</p>
+                        <p className="ant-upload-hint">
+                            Per favore, carica tutte le immagini che illustrano il problema o la causa in modo dettagliato
+                        </p>
+                    </Dragger>
 
-                <Buttons
-                    type="primary"
-                    size="large"
-                    htmlType="submit">
-                    SALVA
-                </Buttons>
-            </div>
+                    <Buttons
+                        type="primary"
+                        size="large"
+                        htmlType="submit">
+                        SALVA
+                    </Buttons>
+                </div>
+            </UiContainer>
         </Form>
     );
 };

@@ -14,7 +14,13 @@ function App() {
     return (
         <AxiosInterceptor>
             <RouterProvider router={router} />
-            <ToastContainer position="bottom-right" />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                pauseOnFocusLoss={false}
+                pauseOnHover={false}
+                closeOnClick
+            />
         </AxiosInterceptor>
     );
 }

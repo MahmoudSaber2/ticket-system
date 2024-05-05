@@ -2,7 +2,7 @@ import React from "react";
 
 import Link from "./Link";
 
-import { AppstoreOutlined, DiffOutlined, InsertRowLeftOutlined, UserAddOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, DiffOutlined, UserAddOutlined } from "@ant-design/icons";
 
 const Navigation = () => {
     const Links = [
@@ -12,7 +12,7 @@ const Navigation = () => {
             header: "ANAGRAFICHE",
             links: [
                 { id: 2, name: "Tickets", link: "tickets", icon: <DiffOutlined /> },
-                { id: 3, name: "Aziende", link: "companies", icon: <InsertRowLeftOutlined /> },
+                // { id: 3, name: "Aziende", link: "companies", icon: <InsertRowLeftOutlined /> },
                 { id: 4, name: "Aggiungi utente", link: "users", icon: <UserAddOutlined /> },
             ],
         },

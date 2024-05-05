@@ -1,11 +1,11 @@
 import { StatusBadge, TableButtons } from "../../components/common";
 
-export const TicketColumnObj = ({ deleteFunction, editFunction, changeStatus }) => {
+export const CustomerColumnObj = ({ deleteFunction, editFunction, changeStatus }) => {
     return [
         {
             key: "1",
-            title: "Nome",
-            dataIndex: "name",
+            title: "Utente Nome",
+            dataIndex: "customerName",
         },
         {
             key: "2",
@@ -14,17 +14,12 @@ export const TicketColumnObj = ({ deleteFunction, editFunction, changeStatus }) 
         },
         {
             key: "3",
-            title: "Descrizione",
-            dataIndex: "description",
-        },
-        {
-            key: "4",
-            title: "Urgenza",
+            title: "Stato",
             dataIndex: "status",
             render: (value) => <StatusBadge statusCode={value} />,
         },
         {
-            key: "5",
+            key: "4",
             title: "",
             render: (_, record) => {
                 return (

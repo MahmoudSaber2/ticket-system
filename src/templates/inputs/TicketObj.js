@@ -1,16 +1,12 @@
-export const TicketObj = () => {
+export const TicketObj = ({ customes, azienda }) => {
 	return [
 		{
-			name: "nome",
+			name: "customerId",
 			label: "Nome",
 			type: "select",
 			placeholder: "Inserisci il nome",
 			rules: { required: true, message: "Inserisci il nome" },
-			options: [
-				{ label: "Nero", value: 2 },
-				{ label: "Giallo", value: 1 },
-				{ label: "Verde", value: 0 },
-			]
+			options: customes,
 		},
 		{
 			name: "pin",
@@ -20,7 +16,7 @@ export const TicketObj = () => {
 			rules: { required: true, message: "Inserisci il pin" },
 		},
 		{
-			name: "urgenza",
+			name: "importance",
 			label: "Urgenza",
 			type: "select",
 			placeholder: "Inserisci la urgenza",
@@ -32,26 +28,22 @@ export const TicketObj = () => {
 			],
 		},
 		{
-			name: "azienda",
+			name: "branchId",
 			label: "Azienda",
 			type: "select",
 			placeholder: "Inserisci la azienda",
 			rules: { required: true, message: "Inserisci la azienda" },
-			options: [
-				{ label: "Azienda 1", value: 1 },
-				{ label: "Azienda 2", value: 2 },
-				{ label: "Azienda 3", value: 3 },
-			],
+			options: azienda,
 		},
 		{
-			name: "image",
+			name: "attachments",
 			label: "Immagine",
 			type: "image",
 			placeholder: "Inserisci l'immagine",
 			hidden: true,
 		},
 		{
-			name: "descrizione",
+			name: "description",
 			label: "Descrizione",
 			type: "textarea",
 			placeholder: "Inserisci la descrizione",
