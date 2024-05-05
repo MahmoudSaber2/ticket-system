@@ -13,9 +13,9 @@ const Login = () => {
             form={form}
             name="login"
             layout="vertical"
-            className="w-full max-w-[500px] border rounded-lg p-5"
+            className="w-full max-w-[500px] rounded-lg border p-5"
             onFinish={(values) => mutate(values)}>
-            <h1 className="text-3xl font-bold mb-5 text-center">Login</h1>
+            <h1 className="mb-5 text-center text-3xl font-bold">Login</h1>
             <Form.Item
                 name="username"
                 label="Username"

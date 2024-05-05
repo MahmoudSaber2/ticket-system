@@ -4,18 +4,27 @@ import React from "react";
 import { FilterWrapper, UiContainer, SelectInput, TextInput } from "../../components/common";
 import { TicketFilterInputs } from "../../templates/inputs/FiltersObj";
 import { useFilter } from "../../store";
+import { useSelects } from "../../hooks/global/useSelectsHook";
+import { GetOptions } from "../../utils/Functions";
+import { useFormDataChanges } from "../../hooks/global/useFormDataChanges";
 
 const TicketFilter = () => {
-    const { setFilterData } = useFilter();
+    const { filterData, setFilterData } = useFilter();
     const [form] = Form.useForm();
 
-    const handelFormChange = () => {};
+    const { data: selects, isLoading } = useSelects();
 
-    const FilterInputs = TicketFilterInputs().map((input) => {
+    const { handelFormChange } = useFormDataChanges(filterData, (newFilterData) => setFilterData(newFilterData));
+
+    const FilterInputs = TicketFilterInputs({
+        customes: GetOptions(selects, "customers") || [],
+        azienda: GetOptions(selects, "companies") || [],
+    }).map((input) => {
         const InputComponent = input?.type === "select" ? SelectInput : TextInput;
         return (
             <Form.Item
                 key={input.name}
+                label={input?.label}
                 className="col-span-1"
                 name={input?.name}>
                 <InputComponent
@@ -30,12 +39,13 @@ const TicketFilter = () => {
     return (
         <Form
             form={form}
+            layout="vertical"
             onValuesChange={handelFormChange}>
             <UiContainer>
                 <FilterWrapper
                     className="border-none"
                     title={"Filtro"}
-                    loading={false}
+                    loading={isLoading}
                     withButtons={false}
                     withClear={true}
                     clearFilter={() => {
