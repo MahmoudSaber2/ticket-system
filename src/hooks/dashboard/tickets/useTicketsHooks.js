@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, useMutation } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useMutation, QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -45,6 +45,39 @@ export const useCreateTicket = (resetForm) => {
         onSuccess: () => {
             toast.success("Ticket created successfully");
             resetForm();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};
+
+export const useTicketsEdit = (id, updateForm) => {
+    const getTicket = async () => {
+        const response = await axios.get(`admin/tickets/edit`, { params: { ticketId: id } });
+        updateForm(response.data);
+        return response.data;
+    };
+    return useQuery({
+        queryKey: ["ticketEdit", id],
+        queryFn: () => getTicket(),
+        enabled: !!id,
+    });
+};
+
+export const useDeleteTicket = (refetch) => {
+    const queryClient = new QueryClient();
+
+    return useMutation({
+        mutationFn: (params) => axios.delete(`admin/tickets/delete`, { params }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["tickets"]);
+            toast.info("Ticket deleted successfully");
+            refetch();
         },
         onError: (error) => {
             const message = error?.response?.data?.message;

@@ -1,6 +1,6 @@
 import { StatusBadge, TableButtons } from "../../components/common";
 
-export const TicketColumnObj = ({ deleteFunction, viewDesc, changeStatus }) => {
+export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) => {
     return [
         {
             key: "1",
@@ -52,7 +52,7 @@ export const TicketColumnObj = ({ deleteFunction, viewDesc, changeStatus }) => {
                 return (
                     <TableButtons
                         deleteRow={deleteFunction}
-                        show={() => viewDesc(record?.description)}
+                        show={() => viewFunction(record?.key)}
                         record={record?.key}
                         status={record?.status}
                         withStatus={false}

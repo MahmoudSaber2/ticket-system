@@ -1,4 +1,6 @@
-export const TicketObj = ({ customes, azienda }) => {
+import { StatusOptions, UrgenzaOptions } from "../../utils/Functions";
+
+export const TicketObj = ({ customes, azienda, inEdit }) => {
 	return [
 		{
 			name: "customerId",
@@ -14,6 +16,7 @@ export const TicketObj = ({ customes, azienda }) => {
 			type: "text",
 			placeholder: "Inserisci il pin",
 			rules: { required: true, message: "Inserisci il pin" },
+			hidden: inEdit,
 		},
 		{
 			name: "importance",
@@ -21,11 +24,7 @@ export const TicketObj = ({ customes, azienda }) => {
 			type: "select",
 			placeholder: "Inserisci la urgenza",
 			rules: { required: true, message: "Inserisci la urgenza" },
-			options: [
-				{ label: "Rosso", value: 2 },
-				{ label: "Giallo", value: 1 },
-				{ label: "Verde", value: 0 },
-			],
+			options: UrgenzaOptions,
 		},
 		{
 			name: "companyId",
@@ -36,12 +35,21 @@ export const TicketObj = ({ customes, azienda }) => {
 			options: azienda,
 		},
 		{
+			name: "status",
+			label: "Stato",
+			type: "select",
+			placeholder: "Inserisci la azienda",
+			rules: { required: true, message: "Inserisci la azienda" },
+			options: StatusOptions,
+			hidden: !inEdit,
+		},
+		{
 			name: "branchId",
 			label: "Azienda",
 			type: "select",
 			placeholder: "Inserisci la azienda",
 			options: azienda,
-			hidden: true,
+			hidden: inEdit || !inEdit,
 		},
 		{
 			name: "attachments",

@@ -4,21 +4,21 @@ import { Modal, Table, TableHeader, UiContainer } from "../../components/common"
 import { useFilter, useTable } from "../../store";
 
 import { TicketColumnObj } from "../../templates/column/TicketColumnObj";
-import { useTickets } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { useDeleteTicket, useTickets } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import TicketModalForm from "./TicketModalForm";
 
 const TicketTable = () => {
     const { filterData } = useFilter();
     const { pagenation, setDetailsId, setPagenation } = useTable();
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [description, setDescription] = React.useState("");
 
-    const { data: tickets, isLoading } = useTickets({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
+    const { data: tickets, isLoading, refetch } = useTickets({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
+    const { mutate: deleteTicket } = useDeleteTicket(refetch);
 
-    const deleteTicket = (id) => {};
-    const viewDesc = (desc) => {
+    const viewTicket = (id) => {
         setIsModalOpen(true);
-        setDescription(desc);
+        setDetailsId(id);
     };
 
     return (
@@ -34,8 +34,8 @@ const TicketTable = () => {
                 tableParams={pagenation}
                 isPagination={true}
                 columns={TicketColumnObj({
-                    deleteFunction: (id) => deleteTicket(id),
-                    viewDesc: (desc) => viewDesc(desc),
+                    deleteFunction: (id) => deleteTicket({ ticketId: id }),
+                    viewFunction: (id) => viewTicket(id),
                 })}
                 data={tickets}
             />
@@ -43,11 +43,8 @@ const TicketTable = () => {
             <Modal
                 isModalOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={"Descrizione"}>
-                <pre
-                    className="whitespace-pre-wrap text-xl font-bold"
-                    dangerouslySetInnerHTML={{ __html: description }}
-                />
+                title={"Ticket details"}>
+                <TicketModalForm />
             </Modal>
         </UiContainer>
     );

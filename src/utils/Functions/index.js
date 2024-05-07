@@ -1,6 +1,6 @@
 export function GetOptions(arr, name) {
     const options = arr?.find((item) => item?.label === name)?.options;
-    return options
+    return options;
 }
 
 export function sumErrors(errorObject) {
@@ -14,3 +14,14 @@ export function sumErrors(errorObject) {
 
     return errorArray;
 }
+
+export const UrgenzaOptions = [
+    { label: "Rosso", value: 2 },
+    { label: "Giallo", value: 1 },
+    { label: "Verde", value: 0 },
+];
+
+export const StatusOptions = [
+    { label: "Attivo", value: 1 },
+    { label: "Disattivo", value: 0 },
+];

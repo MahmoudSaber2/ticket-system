@@ -1,8 +1,10 @@
 import { Input } from "antd";
 
-const TextInput = ({ isPassword, ...props }) => {
-	const Component = isPassword ? Input.Password : Input;
-	return <Component {...props} />;
+const { TextArea } = Input;
+
+const TextInput = ({ isPassword, isTextArea, ...props }) => {
+    const Component = isPassword ? Input.Password : isTextArea ? TextArea : Input;
+    return <Component {...props} />;
 };
 
 export default TextInput;
