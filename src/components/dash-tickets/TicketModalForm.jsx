@@ -48,18 +48,23 @@ const TicketModalForm = () => {
             // onFinish={(values) => (detailsId ? update({ ...values, ticketId: detailsId }) : create(values))}
             layout="vertical">
             <div className="flex flex-wrap items-center gap-2">{TicketForm}</div>
-            <div className="grid w-full grid-cols-4 gap-4 rounded-md border p-3">
-                {form?.getFieldValue("attachments")?.map((file) => (
-                    <Image
-                        key={file}
-                        src={file}
-                        className="w-full rounded-md object-cover"
-                        preview={true}
-                        alt="attachment"
-                        style={{ height: "100px" }}
-                    />
-                ))}
-            </div>
+            {form?.getFieldValue("attachments")?.length > 0 && (
+                <div className="w-full rounded-md border p-3">
+                    <h2>Allegati</h2>{" "}
+                    <div className="grid w-full grid-cols-4 gap-4 rounded-md p-3">
+                        {form?.getFieldValue("attachments")?.map((file) => (
+                            <Image
+                                key={file?.attachmentId}
+                                src={file?.path}
+                                className="w-full rounded-md object-cover"
+                                preview={true}
+                                alt="attachment"
+                                style={{ height: "100px" }}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
             <div className="mt-4 w-full rounded-md border p-3">
                 <h2>Descrizione</h2>{" "}
                 <pre

@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 
 import { sumErrors } from "../../../utils/Functions";
 
-export const useCustomes = (pagination, setPagination, resetParamPageId) => {
-    const getCustomers = async () => {
-        const response = await axios.get("admin/customers", {
+export const useAdmins = (pagination, setPagination, resetParamPageId) => {
+    const getAdmins = async () => {
+        const response = await axios.get("admin/users", {
             params: {
                 page: pagination?.current,
                 pageSize: pagination?.pageSize,
@@ -17,31 +17,34 @@ export const useCustomes = (pagination, setPagination, resetParamPageId) => {
         const {
             data: {
                 pagination: { total, per_page: pageSize, current_page: current },
-                result: { customers },
+                result: { users },
             },
         } = response;
 
         setPagination({ position: ["bottomLeft"], total, pageSize, current });
         resetParamPageId();
-        return customers.map((customer) => ({ ...customer, key: customer.customerId }));
+        return users.map((user) => ({ ...user, key: user.userId }));
     };
 
     return useQuery({
-        queryKey: ["customer", pagination],
-        queryFn: () => getCustomers(),
+        queryKey: ["admins", pagination],
+        queryFn: () => getAdmins(),
         placeholderData: keepPreviousData,
         keepPreviousData: true,
     });
 };
 
-export const useCreateCustomer = (closeModel) => {
+export const useCreateAdmin = (closeModel) => {
     const queryClient = new QueryClient();
 
     return useMutation({
-        mutationFn: (data) => axios.post(`admin/customers/create`, data),
+        mutationFn: (data) =>
+            axios.post(`admin/users/create`, data, {
+                headers: { "Content-Type": "multipart/form-data" },
+            }),
         onSuccess: () => {
-            queryClient.invalidateQueries(["customer"]);
-            toast.success("Utente created successfully");
+            queryClient.invalidateQueries(["admins"]);
+            toast.success("Admin created successfully");
             closeModel();
         },
         onError: (error) => {
@@ -54,27 +57,30 @@ export const useCreateCustomer = (closeModel) => {
     });
 };
 
-export const useCustomersEdit = (id, updateForm) => {
-    const getCustomer = async () => {
-        const response = await axios.get(`admin/customers/edit`, { params: { customerId: id } });
+export const useAdminsEdit = (id, updateForm) => {
+    const getAdmin = async () => {
+        const response = await axios.get(`admin/users/edit`, { params: { userId: id } });
         updateForm(response.data);
         return response.data;
     };
     return useQuery({
-        queryKey: ["customerEdit", id],
-        queryFn: () => getCustomer(),
+        queryKey: ["adminEdit", id],
+        queryFn: () => getAdmin(),
         enabled: !!id,
     });
 };
 
-export const useUpdateCustomer = (closeModel) => {
+export const useUpdateAdmin = (closeModel) => {
     const queryClient = new QueryClient();
 
     return useMutation({
-        mutationFn: (data) => axios.put(`admin/customers/update`, data),
+        mutationFn: (data) =>
+            axios.post(`admin/users/update`, data, {
+                headers: { "Content-Type": "multipart/form-data" },
+            }),
         onSuccess: () => {
-            queryClient.invalidateQueries(["customer"]);
-            toast.success("Utente updated successfully");
+            queryClient.invalidateQueries(["admins"]);
+            toast.success("Admin updated successfully");
             closeModel();
         },
         onError: (error) => {
@@ -87,14 +93,34 @@ export const useUpdateCustomer = (closeModel) => {
     });
 };
 
-export const useDeleteCustomer = (refetch) => {
+export const useChangeStatus = (refetch) => {
     const queryClient = new QueryClient();
 
     return useMutation({
-        mutationFn: (params) => axios.delete(`admin/customers/delete`, { params }),
+        mutationFn: (data) => axios.post(`admin/users/changestatus`, data),
         onSuccess: () => {
-            queryClient.invalidateQueries(["customer"]);
-            toast.info("Utente deleted successfully");
+            queryClient.invalidateQueries(["admins"]);
+            toast.success("Admin status updated successfully");
+            refetch();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};
+
+export const useDeleteAdmin = (refetch) => {
+    const queryClient = new QueryClient();
+
+    return useMutation({
+        mutationFn: (params) => axios.delete(`admin/users/delete`, { params }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["admins"]);
+            toast.info("Admin deleted successfully");
             refetch();
         },
         onError: (error) => {

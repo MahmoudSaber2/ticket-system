@@ -5,5 +5,6 @@ import Login from "./auth/Login";
 import ManagementTickets from "./dashboard/ManagementTickets";
 import Dashboard from "./dashboard/Dashboard";
 import Customers from "./dashboard/Customers";
+import Admins from "./dashboard/Admins";
 
-export { Tickets, ManagementTickets, Dashboard, Customers, Login };
+export { Tickets, ManagementTickets, Dashboard, Customers, Admins, Login };

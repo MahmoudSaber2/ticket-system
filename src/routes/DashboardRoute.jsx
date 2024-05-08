@@ -1,4 +1,4 @@
-import { Dashboard, ManagementTickets, Customers } from "../pages";
+import { Dashboard, ManagementTickets, Customers, Admins } from "../pages";
 import NotFound from "../components/NotFound";
 import DashboardLayout from "../templates/DashboardLayout";
 
@@ -18,6 +18,10 @@ export const DashboardRoute = {
         {
             path: "users",
             element: <Customers />,
+        },
+        {
+            path: "admins",
+            element: <Admins />,
         },
     ],
 };

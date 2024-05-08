@@ -1,3 +1,5 @@
+import { StatusOptions } from "../../utils/Functions";
+
 export const TicketFilterInputs = ({ customes, azienda }) => {
     return [
         {
@@ -31,6 +33,13 @@ export const TicketFilterInputs = ({ customes, azienda }) => {
             placeholder: "Inserisci la azienda",
             options: azienda,
         },
+        {
+            name: "status",
+            label: "Stato",
+            type: "select",
+            placeholder: "Inserisci lo stato",
+            options: StatusOptions,
+        },
     ];
 };
 
@@ -48,6 +57,31 @@ export const CustomerFilterInputs = ({ azienda }) => {
             type: "select",
             placeholder: "Inserisci la azienda",
             options: azienda,
+        },
+        {
+            name: "status",
+            label: "Stato",
+            type: "select",
+            placeholder: "Inserisci lo stato",
+            options: StatusOptions,
+        },
+    ];
+};
+
+export const AdminFilterInputs = () => {
+    return [
+        {
+            name: "search",
+            label: "Cerca",
+            type: "text",
+            placeholder: "Cerca",
+        },
+        {
+            name: "status",
+            label: "Stato",
+            type: "select",
+            placeholder: "Inserisci lo stato",
+            options: StatusOptions,
         },
     ];
 };
