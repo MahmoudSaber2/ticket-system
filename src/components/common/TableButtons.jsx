@@ -36,34 +36,36 @@ const TableButtons = ({ editRow, deleteRow, show, ...props }) => {
 
     return (
         <div className="flex items-center justify-center gap-2">
-            <div className="rounded bg-slate-200/20 p-[5px]">
-                {editRow && (
+            {editRow && (
+                <div className="rounded bg-slate-200/20 p-[5px]">
                     <CiEdit
                         size={20}
                         color="blue"
                         className="cursor-pointer"
                         onClick={() => editRow(props?.record)}
                     />
-                )}
-            </div>
-            <div className="rounded bg-slate-200/20 p-[5px]">
-                {show && (
+                </div>
+            )}
+            {show && (
+                <div className="rounded bg-slate-200/20 p-[5px]">
                     <FaEye
                         size={20}
                         color="#4096ff"
                         className="cursor-pointer"
                         onClick={() => show()}
                     />
-                )}
-            </div>
-            <div className="rounded bg-slate-200/20 p-[5px]">
-                <CiTrash
-                    size={20}
-                    color="red"
-                    className="cursor-pointer"
-                    onClick={() => setOpen(true)}
-                />
-            </div>
+                </div>
+            )}
+            {deleteRow && (
+                <div className="rounded bg-slate-200/20 p-[5px]">
+                    <CiTrash
+                        size={20}
+                        color="red"
+                        className="cursor-pointer"
+                        onClick={() => setOpen(true)}
+                    />
+                </div>
+            )}
             {props?.withStatus && (
                 <Dropdown
                     menu={{

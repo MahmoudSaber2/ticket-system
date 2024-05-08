@@ -1,5 +1,6 @@
 import { Avatar } from "antd";
 import { StatusBadge, TableButtons } from "../../components/common";
+import { GetPermission } from "../../utils/Functions";
 
 export const AdminColumnObj = ({ deleteFunction, editFunction, changeStatus }) => {
     return [
@@ -39,11 +40,11 @@ export const AdminColumnObj = ({ deleteFunction, editFunction, changeStatus }) =
             render: (_, record) => {
                 return (
                     <TableButtons
-                        deleteRow={deleteFunction}
-                        editRow={editFunction}
+                        deleteRow={GetPermission("delete_user") ? deleteFunction : false}
+                        editRow={GetPermission("delete_user") ? editFunction : false}
                         record={record?.key}
                         status={record?.status}
-                        withStatus={false}
+                        withStatus={true}
                         changeStatus={changeStatus || (() => {})}
                     />
                 );

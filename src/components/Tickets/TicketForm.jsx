@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/no-custom-classname */
 import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { Form, Image, message, Upload } from "antd";
+import { Form, message, Upload } from "antd";
 
 import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
 import { TicketObj } from "../../templates/inputs/TicketObj";
@@ -93,9 +93,8 @@ const TicketForm = () => {
             onFinish={onFinish}>
             <UiContainer loading={isLoading}>
                 <div className="flex items-center gap-3">
-                    <Image
+                    <img
                         src={logo}
-                        preview={false}
                         className="max-w-8"
                         alt="logo"
                     />

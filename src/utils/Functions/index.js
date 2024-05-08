@@ -1,3 +1,5 @@
+import { Cookies } from "react-cookie";
+
 export function GetOptions(arr, name) {
     const options = arr?.find((item) => item?.label === name)?.options;
     return options;
@@ -13,6 +15,15 @@ export function sumErrors(errorObject) {
     }
 
     return errorArray;
+}
+
+export function GetPermission(name) {
+    const cookies = new Cookies();
+    const permission = cookies.get("permissions");
+    
+    const getAccess = permission?.find((item) => item?.permissionName === name)?.access;
+
+    return getAccess;
 }
 
 export const UrgenzaOptions = [

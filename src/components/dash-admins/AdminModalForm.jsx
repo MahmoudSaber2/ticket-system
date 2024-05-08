@@ -1,5 +1,5 @@
 /* eslint-disable tailwindcss/no-custom-classname */
-import { Button, Form, Upload } from "antd";
+import { Button, Form, Image, Upload } from "antd";
 import React from "react";
 
 import { TextInput, SelectInput, Buttons } from "../common";
@@ -52,18 +52,30 @@ const CustomerModalForm = ({ closeModal }) => {
             initialValues={details}
             onFinish={(values) => (detailsId ? update({ ...values, userId: detailsId, _method: "PUT" }) : create(values))}
             layout="vertical">
+            {details && (
+                <Image
+                    key={form.getFieldValue("avatar")}
+                    src={form.getFieldValue("avatar")}
+                    className="w-full rounded-md object-cover"
+                    preview={true}
+                    alt="avatar"
+                    style={{ height: "100px", width: "100%" }}
+                />
+            )}
             {AdminForm}
 
-            <div className="mb-6">
-                <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    onChange={({ file }) => form.setFieldValue("avatar", file.originFileObj)}
-                    fileList={form.getFieldValue("avatar")}
-                    onRemove={() => form.setFieldValue("avatar", undefined)}
-                    listType="picture"
-                    maxCount={1}>
-                    <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
-                </Upload>
+            <div className="mb-6 min-w-full">
+                {!detailsId && (
+                    <Upload
+                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                        onChange={({ file }) => form.setFieldValue("avatar", file.originFileObj)}
+                        fileList={form.getFieldValue("avatar") || []}
+                        onRemove={() => form.setFieldValue("avatar", undefined)}
+                        listType="picture"
+                        maxCount={1}>
+                        <Button icon={<UploadOutlined />}>Upload (Max: 1)</Button>
+                    </Upload>
+                )}
             </div>
 
             <Buttons

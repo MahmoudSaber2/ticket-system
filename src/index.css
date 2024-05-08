@@ -136,3 +136,7 @@ body {
 		@apply border-b-[1px] p-5 text-xl font-bold;
 	}
 }
+
+:where(.css-dev-only-do-not-override-kghr11).ant-image {
+	width: 100% !important;
+}

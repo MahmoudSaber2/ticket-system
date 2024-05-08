@@ -5,6 +5,7 @@ import { useAdmins, useChangeStatus, useDeleteAdmin } from "../../hooks/dashboar
 import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { AdminColumnObj } from "../../templates/column/AdminColumnObj";
 import AdminModalForm from "./AdminModalForm";
+import { GetPermission } from "../../utils/Functions";
 
 const UsersTable = () => {
     const { filterData } = useFilter();
@@ -25,7 +26,7 @@ const UsersTable = () => {
             <TableHeader
                 ListName={"Amministratori"}
                 dataLength={pagenation?.total}
-                buttonName={"Aggiungi admin"}
+                buttonName={GetPermission("create_user") ? "Aggiungi admin" : false}
                 onClick={() => setIsModalOpen(true)}
             />
 

@@ -5,6 +5,7 @@ import { useCustomes, useDeleteCustomer } from "../../hooks/dashboard/customers/
 import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { CustomerColumnObj } from "../../templates/column/CustomerColumnObj";
 import CustomerModalForm from "./CustomerModalForm";
+import { GetPermission } from "../../utils/Functions";
 
 const UsersTable = () => {
     const { filterData } = useFilter();
@@ -24,7 +25,7 @@ const UsersTable = () => {
             <TableHeader
                 ListName={"Utenti"}
                 dataLength={pagenation?.total}
-                buttonName={"Aggiungi utente"}
+                buttonName={GetPermission("create_customer") ? "Aggiungi utente" : false}
                 onClick={() => setIsModalOpen(true)}
             />
 
