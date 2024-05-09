@@ -1,4 +1,4 @@
-export const AdminObj = ({ roles }) => {
+export const AdminObj = ({ roles, inEditMode }) => {
     return [
         {
             name: "userId",
@@ -34,7 +34,7 @@ export const AdminObj = ({ roles }) => {
             label: "Password",
             type: "password",
             placeholder: "Inserisci il password",
-            rules: { required: true, message: "Inserisci il password" },
+            rules: inEditMode ? {} : { required: true, message: "Inserisci il password" },
             isPassword: true,
         },
         {

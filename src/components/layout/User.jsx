@@ -17,7 +17,7 @@ const User = () => {
         cookie.remove("role");
     };
 
-    const userMenu = SidebarUserDrop({ logout: handleLogout });
+    const userMenu = SidebarUserDrop({ logout: () => handleLogout() });
 
     return (
         <Dropdown
@@ -27,6 +27,7 @@ const User = () => {
             <div className="flex items-center gap-3">
                 <Avatar
                     size={44}
+                    src={profile?.avatar}
                     icon={<UserOutlined />}
                 />
                 <div className="flex flex-col">

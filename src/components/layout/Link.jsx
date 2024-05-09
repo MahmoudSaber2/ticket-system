@@ -18,7 +18,7 @@ const Link = ({ ...props }) => {
         <RLink
             to={link}
             onClick={() => setCurrentPageName(name)}
-            className={`flex w-full cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-slate-200 ${isActive && "bg-slate-200"} text-black hover:text-black`}>
+            className={`flex w-full cursor-pointer items-center gap-2 rounded-md p-2 text-sm hover:bg-slate-200 ${isActive && "bg-slate-200"} text-black hover:text-black`}>
             {icon} {name}
         </RLink>
     );

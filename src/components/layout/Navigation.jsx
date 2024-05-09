@@ -3,7 +3,7 @@ import { Cookies } from "react-cookie";
 
 import Link from "./Link";
 
-import { AppstoreOutlined, DiffOutlined, UserAddOutlined, UsergroupAddOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, DiffOutlined, UserAddOutlined, UsergroupAddOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
 import { GetPermission } from "../../utils/Functions";
 
 const Navigation = () => {
@@ -23,6 +23,7 @@ const Navigation = () => {
                 // { id: 3, name: "Aziende", link: "companies", icon: <InsertRowLeftOutlined /> },
                 { id: 4, name: "Aggiungi utente", link: "users", icon: <UserAddOutlined />, show: GetPermission("all_customers") },
                 { id: 5, name: "Admin utente", link: "admins", icon: <UsergroupAddOutlined />, show: GetPermission("all_users") },
+                { id: 5, name: "Ruolo's", link: "roles", icon: <SafetyCertificateOutlined />, show: GetPermission("all_roles") },
             ],
         },
     ];
