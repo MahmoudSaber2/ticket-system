@@ -3,12 +3,12 @@ import { Form, Image } from "antd";
 
 import { useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
-import { useTicketsEdit } from "../../hooks/dashboard/tickets/useTicketsHooks";
-import { SelectInput, TextInput } from "../common";
+import { useTicketsEdit, useUpdateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { Buttons, SelectInput, TextInput } from "../common";
 import { GetOptions } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 
-const TicketModalForm = () => {
+const TicketModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
     const [form] = Form.useForm();
 
@@ -39,13 +39,17 @@ const TicketModalForm = () => {
     });
 
     const { data: details } = useTicketsEdit(detailsId, (values) => form.setFieldsValue(values));
+    const { mutate: update } = useUpdateTicket(() => {
+        form.resetFields();
+        closeModal();
+    });
 
     return (
         <Form
             form={form}
             name="customer"
             initialValues={details}
-            // onFinish={(values) => (detailsId ? update({ ...values, ticketId: detailsId }) : create(values))}
+            onFinish={(values) => update({ ...values, ticketId: detailsId, _method: "PUT" })}
             layout="vertical">
             <div className="flex flex-wrap items-center gap-2">{TicketForm}</div>
             {form?.getFieldValue("attachments")?.length > 0 && (
@@ -72,14 +76,15 @@ const TicketModalForm = () => {
                     dangerouslySetInnerHTML={{ __html: form.getFieldValue("description") }}
                 />
             </div>
-            {/* <Buttons
+            <Buttons
+                className="mt-4"
                 type="primary"
                 size="large"
                 block
-                loading={isPending || updatePending}
+                loading={false}
                 htmlType="submit">
                 {detailsId ? "Modifica" : "Salva"}
-            </Buttons> */}
+            </Buttons>
         </Form>
     );
 };

@@ -7,7 +7,7 @@ import { RolesObj } from "../../templates/inputs/RolesObj";
 import { useSelects } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
 import { useTable } from "../../store";
-import { useCreateRole } from "../../hooks/dashboard/roles/useRolesHooks";
+import { useCreateRole, useRolesEdit, useUpdateRole } from "../../hooks/dashboard/roles/useRolesHooks";
 
 const CustomerModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
@@ -23,7 +23,7 @@ const CustomerModalForm = ({ closeModal }) => {
         };
     });
 
-    const AdminForm = RolesObj({ permissions: updatePermissionsOptions || [], inEditMode: !!detailsId }).map((input) => {
+    const AdminForm = RolesObj({ permissions: updatePermissionsOptions || [] }).map((input) => {
         const Component = input.type === "select" ? SelectInput : TextInput;
         return (
             <Form.Item
@@ -43,7 +43,12 @@ const CustomerModalForm = ({ closeModal }) => {
         );
     });
 
+    const { data: details } = useRolesEdit(detailsId, (values) => form.setFieldsValue(values));
     const { mutate: create, isPending } = useCreateRole(() => {
+        form.resetFields();
+        closeModal();
+    });
+    const { mutate: update } = useUpdateRole(() => {
         form.resetFields();
         closeModal();
     });
@@ -52,7 +57,8 @@ const CustomerModalForm = ({ closeModal }) => {
         <Form
             form={form}
             name="admin"
-            onFinish={(values) => create(values)}
+            initialValues={details}
+            onFinish={(values) => (detailsId ? update({ ...values, roleId: detailsId }) : create(values))}
             layout="vertical">
             {AdminForm}
 

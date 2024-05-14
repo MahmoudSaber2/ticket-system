@@ -69,6 +69,29 @@ export const useTicketsEdit = (id, updateForm) => {
     });
 };
 
+export const useUpdateTicket = (closeModel) => {
+    return useMutation({
+        mutationFn: (data) => {
+            return axios.post("admin/tickets/update", data,{
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+        },
+        onSuccess: () => {
+            toast.success("Ticket updated successfully");
+            closeModel();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};
+
 export const useDeleteTicket = (refetch) => {
     const queryClient = new QueryClient();
 

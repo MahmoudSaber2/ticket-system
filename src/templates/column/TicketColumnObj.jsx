@@ -48,6 +48,16 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
         },
         {
             key: "7",
+            title: "Date creazione",
+            dataIndex: "createdAt",
+        },
+        {
+            key: "8",
+            title: "Date fine",
+            dataIndex: "closedAt",
+        },
+        {
+            key: "9",
             title: "",
             render: (_, record) => {
                 return (

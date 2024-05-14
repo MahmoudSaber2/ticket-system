@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useFilter, useTable } from "../../store";
-import { useRoles } from "../../hooks/dashboard/roles/useRolesHooks";
+import { useDeleteRole, useRoles } from "../../hooks/dashboard/roles/useRolesHooks";
 import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { RoleColumnObj } from "../../templates/column/RolesColumnObj";
 import RoleModalForm from "./RoleModalForm";
@@ -13,6 +13,7 @@ const RolesTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data: admins, isLoading, refetch } = useRoles({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
+    const { mutate: deleteRole } = useDeleteRole(refetch);
 
     const editAdmin = (id) => {
         setDetailsId(id);
@@ -34,6 +35,7 @@ const RolesTable = () => {
                 tableParams={pagenation}
                 isPagination={true}
                 columns={RoleColumnObj({
+                    deleteFunction: (id) => deleteRole({ roleId: id }),
                     editFunction: (id) => editAdmin(id),
                 })}
                 data={admins}

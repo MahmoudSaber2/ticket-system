@@ -7,10 +7,14 @@ import { SidebarUserDrop } from "../../templates/dropdown-objects/SidebarUserDro
 
 const User = () => {
     const cookie = new Cookies();
-    const [cookies] = useCookies();
+    const [cookies, setCookie] = useCookies();
     const profile = cookies?.profile;
 
     const handleLogout = () => {
+        setCookie("token", "", { path: "/" });
+        setCookie("profile", "", { path: "/" });
+        setCookie("permissions", "", { path: "/" });
+        setCookie("role", "", { path: "/" });
         cookie.remove("token");
         cookie.remove("profile");
         cookie.remove("permissions");

@@ -55,78 +55,56 @@ export const useCreateRole = (closeModel) => {
     });
 };
 
-// export const useRolesEdit = (id, updateForm) => {
-//     const getRole = async () => {
-//         const response = await axios.get(`role/users/edit`, { params: { userId: id } });
-//         updateForm(response.data);
-//         return response.data;
-//     };
-//     return useQuery({
-//         queryKey: ["roleEdit", id],
-//         queryFn: () => getRole(),
-//         enabled: !!id,
-//     });
-// };
+export const useRolesEdit = (id, updateForm) => {
+    const getRole = async () => {
+        const response = await axios.get(`admin/roles/edit`, { params: { roleId: id } });
+        updateForm(response.data);
+        return response.data;
+    };
+    return useQuery({
+        queryKey: ["roleEdit", id],
+        queryFn: () => getRole(),
+        enabled: !!id,
+    });
+};
 
-// export const useUpdateRole = (closeModel) => {
-//     const queryClient = new QueryClient();
+export const useUpdateRole = (closeModel) => {
+    const queryClient = new QueryClient();
 
-//     return useMutation({
-//         mutationFn: (data) =>
-//             axios.post(`role/users/update`, data, {
-//                 headers: { "Content-Type": "multipart/form-data" },
-//             }),
-//         onSuccess: () => {
-//             queryClient.invalidateQueries(["roles"]);
-//             toast.success("Role updated successfully");
-//             closeModel();
-//         },
-//         onError: (error) => {
-//             const message = error?.response?.data?.message;
-//             const typeMessage = typeof message;
+    return useMutation({
+        mutationFn: (data) =>
+            axios.put(`admin/roles/update`, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["roles"]);
+            toast.success("Role updated successfully");
+            closeModel();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
 
-//             const errors = typeMessage === "string" ? [message] : sumErrors(message);
-//             errors.forEach((error) => toast.error(error));
-//         },
-//     });
-// };
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};
 
-// export const useChangeStatus = (refetch) => {
-//     const queryClient = new QueryClient();
+export const useDeleteRole = (refetch) => {
+    const queryClient = new QueryClient();
 
-//     return useMutation({
-//         mutationFn: (data) => axios.post(`role/users/changestatus`, data),
-//         onSuccess: () => {
-//             queryClient.invalidateQueries(["roles"]);
-//             toast.success("Role status updated successfully");
-//             refetch();
-//         },
-//         onError: (error) => {
-//             const message = error?.response?.data?.message;
-//             const typeMessage = typeof message;
+    return useMutation({
+        mutationFn: (params) => axios.delete(`admin/roles/delete`, { params }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(["roles"]);
+            toast.info("Role deleted successfully");
+            refetch();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const typeMessage = typeof message;
 
-//             const errors = typeMessage === "string" ? [message] : sumErrors(message);
-//             errors.forEach((error) => toast.error(error));
-//         },
-//     });
-// };
-
-// export const useDeleteRole = (refetch) => {
-//     const queryClient = new QueryClient();
-
-//     return useMutation({
-//         mutationFn: (params) => axios.delete(`role/users/delete`, { params }),
-//         onSuccess: () => {
-//             queryClient.invalidateQueries(["roles"]);
-//             toast.info("Role deleted successfully");
-//             refetch();
-//         },
-//         onError: (error) => {
-//             const message = error?.response?.data?.message;
-//             const typeMessage = typeof message;
-
-//             const errors = typeMessage === "string" ? [message] : sumErrors(message);
-//             errors.forEach((error) => toast.error(error));
-//         },
-//     });
-// };
+            const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};

@@ -15,7 +15,7 @@ export const TicketObj = ({ customes, azienda, inEdit }) => {
 			label: "PIN",
 			type: "text",
 			placeholder: "Inserisci il pin",
-			rules: { required: true, message: "Inserisci il pin" },
+			rules: { required: !inEdit, message: "Inserisci il pin" },
 			hidden: inEdit,
 		},
 		{

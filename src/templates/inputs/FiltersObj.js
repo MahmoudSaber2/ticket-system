@@ -16,7 +16,7 @@ export const TicketFilterInputs = ({ customes, azienda }) => {
             options: customes,
         },
         {
-            name: "urgenza",
+            name: "importance",
             label: "Urgenza",
             type: "select",
             placeholder: "Inserisci la urgenza",

@@ -44,7 +44,13 @@ const TicketTable = () => {
                 isModalOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={"Ticket details"}>
-                <TicketModalForm />
+                <TicketModalForm
+                    closeModal={() => {
+                        setIsModalOpen(false);
+                        refetch();
+                        setDetailsId(null);
+                    }}
+                />
             </Modal>
         </UiContainer>
     );
