@@ -39,7 +39,6 @@ export const TicketObj = ({ customes, azienda, inEdit }) => {
 			label: "Stato",
 			type: "select",
 			placeholder: "Inserisci la azienda",
-			rules: { required: true, message: "Inserisci la azienda" },
 			options: StatusOptions,
 			hidden: !inEdit,
 		},
