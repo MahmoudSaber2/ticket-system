@@ -21,7 +21,10 @@ const TicketForm = () => {
     // Hooks
     const { mutate: getBranches } = useSelects2((values) => setBranches(values));
     const { data: selects, isLoading } = useSelects();
-    const { mutate: create, isPending } = useCreateTicket(() => form.resetFields());
+    const { mutate: create, isPending } = useCreateTicket(() => {
+        form.resetFields();
+        editorRef.current?.setContent("");
+    });
 
     const branch = GetOptions(branches, "branches")?.[0]?.value;
 
@@ -61,7 +64,7 @@ const TicketForm = () => {
 
     const props = {
         name: "file",
-        accept: "image/*",
+        accept: "*/*",
         showUploadList: true,
         listType: "picture",
         multiple: true,
@@ -113,6 +116,7 @@ const TicketForm = () => {
                         }}
                         onEditorChange={(content) => form.setFieldValue("description", content)}
                         initialValue={form.getFieldValue("description")}
+                        value={form.getFieldValue("description")}
                         init={{
                             height: 280,
                             menubar: false,

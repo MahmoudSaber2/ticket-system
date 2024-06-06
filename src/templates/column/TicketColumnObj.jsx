@@ -24,7 +24,7 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
             dataIndex: "description",
             render: (value) => (
                 <div
-                    className="truncate"
+                    className="w-full max-w-[100px] truncate"
                     dangerouslySetInnerHTML={{ __html: value }}
                 />
             ),

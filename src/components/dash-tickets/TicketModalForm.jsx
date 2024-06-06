@@ -38,7 +38,7 @@ const TicketModalForm = ({ closeModal }) => {
         );
     });
 
-    const { data: details } = useTicketsEdit(detailsId, (values) => form.setFieldsValue(values));
+    useTicketsEdit(detailsId, (values) => form.setFieldsValue(values));
     const { mutate: update } = useUpdateTicket(() => {
         form.resetFields();
         closeModal();
@@ -48,7 +48,6 @@ const TicketModalForm = ({ closeModal }) => {
         <Form
             form={form}
             name="customer"
-            initialValues={details}
             onFinish={(values) => update({ ...values, ticketId: detailsId, _method: "PUT" })}
             layout="vertical">
             <div className="flex flex-wrap items-center gap-2">{TicketForm}</div>
@@ -60,7 +59,7 @@ const TicketModalForm = ({ closeModal }) => {
                             <Image
                                 key={file?.attachmentId}
                                 src={file?.path}
-                                className="w-full rounded-md object-cover"
+                                className="w-full rounded-md bg-slate-200 object-cover"
                                 preview={true}
                                 alt="attachment"
                                 style={{ height: "100px" }}
@@ -72,7 +71,7 @@ const TicketModalForm = ({ closeModal }) => {
             <div className="mt-4 w-full rounded-md border p-3">
                 <h2>Descrizione</h2>{" "}
                 <pre
-                    className="w-full text-xl font-bold"
+                    className="w-full whitespace-pre-wrap text-xl font-bold"
                     dangerouslySetInnerHTML={{ __html: form.getFieldValue("description") }}
                 />
             </div>

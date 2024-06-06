@@ -33,6 +33,7 @@ export const UrgenzaOptions = [
 ];
 
 export const StatusOptions = [
-    { label: "Attivo", value: 1 },
-    { label: "Disattivo", value: 0 },
+    { label: "Aperto", value: 1 },
+    { label: "Chiuso", value: 0 },
+    { label: "In Progress", value: 2 },
 ];
