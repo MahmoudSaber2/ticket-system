@@ -3,10 +3,12 @@ import { Outlet } from "react-router-dom";
 import ComponentGuard from "../services/DashGuard";
 import Sidebar from "../components/layout/Sidebar";
 import Navbar from "../components/layout/Navbar";
+import { AutoLogout } from "../services/AutoLogout";
 
 const DashboardLayout = () => {
     return (
         <div className="flex min-h-screen w-full bg-white">
+            <AutoLogout />
             <div className="fixed m-2 hidden h-[98vh] w-[300px] items-start justify-center overflow-y-auto rounded-md border bg-white shadow-md lg:flex">
                 <Sidebar />
             </div>
