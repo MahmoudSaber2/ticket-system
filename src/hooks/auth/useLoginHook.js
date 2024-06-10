@@ -5,7 +5,7 @@ import { Cookies } from "react-cookie";
 
 export const useLogin = () => {
 	const cookies = new Cookies();
-    const logOutTime = new Date(Date.now() + 48 * 60 * 60 * 1000);
+    const logOutTime = new Date(Date.now() + 8 * 60 * 60 * 1000);
 
     return useMutation({
         mutationFn: (data) => {
