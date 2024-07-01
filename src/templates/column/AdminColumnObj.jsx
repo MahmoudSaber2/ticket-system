@@ -32,7 +32,12 @@ export const AdminColumnObj = ({ deleteFunction, editFunction, changeStatus }) =
             key: "4",
             title: "Stato",
             dataIndex: "status",
-            render: (value) => <StatusBadge statusCode={value} />,
+            render: (value) => (
+                <StatusBadge
+                    where={"customer"}
+                    statusCode={value}
+                />
+            ),
         },
         {
             key: "5",

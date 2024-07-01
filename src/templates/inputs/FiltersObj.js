@@ -1,4 +1,4 @@
-import { StatusOptions } from "../../utils/Functions";
+import { StatusOptions, StatusOptions2 } from "../../utils/Functions";
 
 export const TicketFilterInputs = ({ customes, azienda }) => {
     return [
@@ -63,7 +63,7 @@ export const CustomerFilterInputs = ({ azienda }) => {
             label: "Stato",
             type: "select",
             placeholder: "Inserisci lo stato",
-            options: StatusOptions,
+            options: StatusOptions2,
         },
     ];
 };
@@ -81,7 +81,7 @@ export const AdminFilterInputs = () => {
             label: "Stato",
             type: "select",
             placeholder: "Inserisci lo stato",
-            options: StatusOptions,
+            options: StatusOptions2,
         },
     ];
 };

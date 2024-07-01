@@ -37,3 +37,8 @@ export const StatusOptions = [
     { label: "Chiuso", value: 1 },
     { label: "In Progress", value: 2 },
 ];
+
+export const StatusOptions2 = [
+    { label: "Inattivo", value: 0 },
+    { label: "Attivo", value: 1 },
+];

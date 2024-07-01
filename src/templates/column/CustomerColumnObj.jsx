@@ -17,7 +17,12 @@ export const CustomerColumnObj = ({ deleteFunction, editFunction, changeStatus }
             key: "3",
             title: "Stato",
             dataIndex: "status",
-            render: (value) => <StatusBadge statusCode={value} />,
+            render: (value) => (
+                <StatusBadge
+                    where={"customer"}
+                    statusCode={value}
+                />
+            ),
         },
         {
             key: "4",

@@ -8,7 +8,7 @@ const DefModal = ({ title, isModalOpen, onClose, children, ...props }) => {
             onCancel={onClose}
             footer={false}
             {...props}>
-            {children}
+            <div className="h-[60vh] overflow-y-auto">{children}</div>
         </Modal>
     );
 };
