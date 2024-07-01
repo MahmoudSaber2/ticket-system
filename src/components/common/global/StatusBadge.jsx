@@ -3,8 +3,8 @@ const StatusBadge = ({ statusCode, where }) => {
 
     const getSeverity = (status) => {
         const severityMap = {
-            0: isImportant ? "success" : "danger",
-            1: isImportant ? "warning" : "success",
+            0: isImportant ? "success" : "success",
+            1: isImportant ? "warning" : "danger",
             2: isImportant ? "danger" : "warning",
             default: "outLine",
         };
@@ -15,8 +15,8 @@ const StatusBadge = ({ statusCode, where }) => {
     const severity = getSeverity(statusCode);
 
     const dynamicValue = {
-        0: isImportant ? "Verde" : "Chiuso",
-        1: isImportant ? "Giallo" : "Aperto",
+        0: isImportant ? "Verde" : "Aperto",
+        1: isImportant ? "Giallo" : "Chiuso",
         2: isImportant ? "Rosso" : "In Progress",
     };
 
