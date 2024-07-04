@@ -1,6 +1,6 @@
 import { StatusOptions, UrgenzaOptions } from "../../utils/Functions";
 
-export const TicketObj = ({ customes, azienda, inEdit }) => {
+export const TicketObj = ({ customes, azienda, tags, inEdit }) => {
 	return [
 		{
 			name: "customerId",
@@ -33,6 +33,14 @@ export const TicketObj = ({ customes, azienda, inEdit }) => {
 			placeholder: "Inserisci la azienda",
 			rules: { required: true, message: "Inserisci la azienda" },
 			options: azienda,
+		},
+		{
+			name: "tagId",
+			label: "Tag",
+			type: "select",
+			placeholder: "Inserisci la Tag",
+			rules: { required: false, message: "Inserisci la Tag" },
+			options: tags,
 		},
 		{
 			name: "status",

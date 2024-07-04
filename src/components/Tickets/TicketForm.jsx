@@ -31,6 +31,7 @@ const TicketForm = () => {
     const TicketsField = TicketObj({
         customes: GetOptions(selects, "customers") || [],
         azienda: GetOptions(selects, "companies") || [],
+        tags: GetOptions(selects, "parameters") || [],
     }).map((field) => {
         const Component = field.type === "text" ? TextInput : SelectInput;
         return (
@@ -39,6 +40,7 @@ const TicketForm = () => {
                 label={field.label}
                 name={field.name}
                 hidden={field?.hidden}
+                className="!mb-2"
                 rules={[field?.rules]}>
                 <Component
                     allowClear
@@ -106,7 +108,7 @@ const TicketForm = () => {
 
                 <h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
 
-                <div className="grid grid-cols-2 gap-4">{TicketsField}</div>
+                <div className="mb-4 grid grid-cols-2 gap-4">{TicketsField}</div>
                 <div className="flex flex-col gap-5">
                     <Editor
                         apiKey={"291fk9weadufle2zus63f63n0mrhi4fkyk6za2k25oi6ic18"}

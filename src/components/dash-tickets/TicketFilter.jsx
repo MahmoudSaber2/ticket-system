@@ -19,13 +19,14 @@ const TicketFilter = () => {
     const FilterInputs = TicketFilterInputs({
         customes: GetOptions(selects, "customers") || [],
         azienda: GetOptions(selects, "companies") || [],
+        tags: GetOptions(selects, "parameters") || [],
     }).map((input) => {
         const InputComponent = input?.type === "select" ? SelectInput : TextInput;
         return (
             <Form.Item
                 key={input.name}
                 label={input?.label}
-                className="col-span-1"
+                className="col-span-1 !mb-2"
                 name={input?.name}>
                 <InputComponent
                     placeholder={input?.placeholder}

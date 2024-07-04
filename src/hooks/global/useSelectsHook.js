@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 
 export const useSelects = () => {
     const getSelects = async () => {
-        const { data } = await axios.get(`https://customerservicebe.testingelmo.com/api/v1/selects?allSelects=companies,customers,roles,permissions`);
+        const { data } = await axios.get(`https://customerservicebe.testingelmo.com/api/v1/selects?allSelects=companies,customers,roles,permissions,parameters=1`);
         return data;
     };
 

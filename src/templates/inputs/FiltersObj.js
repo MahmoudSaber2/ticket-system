@@ -1,6 +1,6 @@
 import { StatusOptions, StatusOptions2 } from "../../utils/Functions";
 
-export const TicketFilterInputs = ({ customes, azienda }) => {
+export const TicketFilterInputs = ({ customes, azienda, tags }) => {
     return [
         {
             name: "search",
@@ -26,6 +26,14 @@ export const TicketFilterInputs = ({ customes, azienda }) => {
                 { label: "Verde", value: 0 },
             ],
         },
+        {
+			name: "tagId",
+			label: "Tag",
+			type: "select",
+			placeholder: "Inserisci la Tag",
+			rules: { required: false, message: "Inserisci la Tag" },
+			options: tags,
+		},
         {
             name: "company",
             label: "Azienda",

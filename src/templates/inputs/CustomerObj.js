@@ -19,6 +19,13 @@ export const CustomeObj = ({ azienda }) => {
             rules: { required: true, message: "Inserisci il cognome" },
         },
         {
+            name: "email",
+            label: "E-mail",
+            type: "text",
+            placeholder: "Inserisci il e-mail",
+            rules: { required: true, message: "Inserisci il e-mail" },
+        },
+        {
             name: "pin",
             label: "PIN",
             type: "text",

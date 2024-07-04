@@ -17,6 +17,7 @@ const TicketModalForm = ({ closeModal }) => {
     const TicketForm = TicketObj({
         customes: GetOptions(selects, "customers") || [],
         azienda: GetOptions(selects, "companies") || [],
+        tags: GetOptions(selects, "parameters") || [],
         inEdit: true,
     }).map((input) => {
         const Component = input.type === "select" ? SelectInput : TextInput;

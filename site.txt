@@ -4,3 +4,8 @@ Urgenza -> select ( Rosso - 2 - red, Giallo - 1 - yellow, Verde - 0 - green )
 Descrizione -> text area
 Azienda -> select
 upload image -> optional
+
+
+Customer -> add new input ( Email ) | Done
+When create ticker -> add new select ( tagId ) -> options from selects api undername parameters=1 | Done
+Add filter select to ticket in dashboard ( Tag ) -> options from selects api undername parameters=1 | Done
