@@ -27,7 +27,7 @@ export const TicketFilterInputs = ({ customes, azienda, tags }) => {
             ],
         },
         {
-			name: "tagId",
+			name: "tag",
 			label: "Tag",
 			type: "select",
 			placeholder: "Inserisci la Tag",
