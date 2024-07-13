@@ -9,3 +9,9 @@ upload image -> optional
 Customer -> add new input ( Email ) | Done
 When create ticker -> add new select ( tagId ) -> options from selects api undername parameters=1 | Done
 Add filter select to ticket in dashboard ( Tag ) -> options from selects api undername parameters=1 | Done
+
+
+==========================================
+Ticket - Edit
+-- when choose any status without active -> show the time ( الوقت اللي حصل فيه التعديل ) - هيختار هو التاريخ من عنده
+-- 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Image } from "antd";
+import { DatePicker, Form, Image } from "antd";
 
 import { useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
@@ -7,6 +7,7 @@ import { useTicketsEdit, useUpdateTicket } from "../../hooks/dashboard/tickets/u
 import { Buttons, SelectInput, TextInput } from "../common";
 import { GetOptions } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
+import dayjs from "dayjs";
 
 const TicketModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
@@ -20,7 +21,7 @@ const TicketModalForm = ({ closeModal }) => {
         tags: GetOptions(selects, "parameters") || [],
         inEdit: true,
     }).map((input) => {
-        const Component = input.type === "select" ? SelectInput : TextInput;
+        const Component = input.type === "select" ? SelectInput : input.type === "date" ? DatePicker : TextInput;
         return (
             <Form.Item
                 key={input.name}
@@ -30,6 +31,8 @@ const TicketModalForm = ({ closeModal }) => {
                 name={input?.name}
                 rules={[input?.rules]}>
                 <Component
+                    className="w-full"
+                    format="DD/MM/YYYY"
                     rows={4}
                     placeholder={input?.placeholder}
                     size="large"
@@ -39,7 +42,13 @@ const TicketModalForm = ({ closeModal }) => {
         );
     });
 
-    useTicketsEdit(detailsId, (values) => form.setFieldsValue(values));
+    useTicketsEdit(detailsId, (data) => {
+        const values = {
+            ...data,
+            closedAt: data?.closedAt ? dayjs(data?.closedAt, "YYYY-MM-DD HH:mm:ss") : "",
+        };
+        form.setFieldsValue(values);
+    });
     const { mutate: update } = useUpdateTicket(() => {
         form.resetFields();
         closeModal();
@@ -49,7 +58,9 @@ const TicketModalForm = ({ closeModal }) => {
         <Form
             form={form}
             name="customer"
-            onFinish={(values) => update({ ...values, ticketId: detailsId, _method: "PUT" })}
+            onFinish={(values) =>
+                update({ ...values, ticketId: detailsId, closedAt: values?.closedAt ? values?.closedAt?.format("YYYY-MM-DD") : "", _method: "PUT" })
+            }
             layout="vertical">
             <div className="flex flex-wrap items-center gap-2">{TicketForm}</div>
             {form?.getFieldValue("attachments")?.length > 0 && (
