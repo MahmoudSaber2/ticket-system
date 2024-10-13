@@ -10,10 +10,12 @@ import { Buttons, SelectInput, TextInput } from "../common";
 import { GetOptions } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { useGeminiSDK } from "../../hooks/global/useGeminiSDK";
+import { Cookies } from "react-cookie";
 
 const TicketModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
     const [form] = Form.useForm();
+    const cookies = new Cookies();
 
     const { data: selects } = useSelects();
 
@@ -61,11 +63,13 @@ const TicketModalForm = ({ closeModal }) => {
             )}
             <div className="relative mt-4 w-full rounded-md border p-3">
                 <h2>Descrizione</h2>{" "}
-                <Popover content={<pre className="whitespace-pre-wrap text-sm font-bold" dangerouslySetInnerHTML={{ __html: translate }} />} title="Translated Description" trigger="click">
-                    <div onClick={() => run(form.getFieldValue("description")).then((res) => setTranslate(res))} className="absolute right-3 top-3 cursor-pointer rounded-md bg-cyan-500 p-2">
-                        <MdOutlineTranslate className="text-xl text-white" />
-                    </div>
-                </Popover>
+                {cookies.get("role")?.name === "SuperAdmin" && (
+                    <Popover content={<pre className="whitespace-pre-wrap text-sm font-bold" dangerouslySetInnerHTML={{ __html: translate }} />} title="Translated Description" trigger="click">
+                        <div onClick={() => run(form.getFieldValue("description")).then((res) => setTranslate(res))} className="absolute right-3 top-3 cursor-pointer rounded-md bg-cyan-500 p-2">
+                            <MdOutlineTranslate className="text-xl text-white" />
+                        </div>
+                    </Popover>
+                )}
                 <pre className="w-full whitespace-pre-wrap text-xl font-bold" dangerouslySetInnerHTML={{ __html: form.getFieldValue("description") }} />
             </div>
             <Buttons className="mt-4" type="primary" size="large" block loading={false} htmlType="submit">
