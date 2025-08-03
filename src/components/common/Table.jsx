@@ -23,7 +23,7 @@ const Table = ({
             }
             dataSource={data}
             onChange={onChange}
-            pagination={isPagination ? tableParams : false}
+            pagination={isPagination ? {...tableParams, showSizeChanger: true, pageSizeOptions: [10, 20, 30, 40, parseInt(tableParams.total)]} : false}
             loading={loadingTable}
             showSorterTooltip={false}
             scroll={{ x: "max-content" }}
