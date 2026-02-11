@@ -43,6 +43,7 @@ const TicketTable = () => {
             <Modal
                 isModalOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
+                width={600}
                 title={"Ticket details"}>
                 <TicketModalForm
                     closeModal={() => {
