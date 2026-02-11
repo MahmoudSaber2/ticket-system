@@ -47,17 +47,17 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
             render: (value) => <StatusBadge statusCode={value} />,
         },
         {
-            key: "7",
+            key: "8",
             title: "Date creazione",
             dataIndex: "createdAt",
         },
         {
-            key: "8",
+            key: "9",
             title: "Date fine",
             dataIndex: "closedAt",
         },
         {
-            key: "9",
+            key: "10",
             title: "",
             render: (_, record) => {
                 return (

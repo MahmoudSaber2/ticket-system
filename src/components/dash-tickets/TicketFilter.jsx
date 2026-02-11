@@ -1,5 +1,4 @@
 import { Form } from "antd";
-import React from "react";
 
 import { FilterWrapper, UiContainer, SelectInput, TextInput } from "../../components/common";
 import { TicketFilterInputs } from "../../templates/inputs/FiltersObj";

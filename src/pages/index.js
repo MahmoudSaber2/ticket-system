@@ -1,4 +1,5 @@
 import Tickets from "./Tickets";
+import Review from "./Review";
 import Login from "./auth/Login";
 
 // Dashboard
@@ -8,4 +9,4 @@ import Customers from "./dashboard/Customers";
 import Admins from "./dashboard/Admins";
 import Roles from "./dashboard/Roles";
 
-export { Tickets, ManagementTickets, Dashboard, Customers, Admins, Roles, Login };
+export { Tickets, Review, ManagementTickets, Dashboard, Customers, Admins, Roles, Login };

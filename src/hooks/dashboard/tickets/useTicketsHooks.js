@@ -69,6 +69,44 @@ export const useTicketsEdit = (id, updateForm) => {
     });
 };
 
+export const useTicketLogs = (ticketId, enabled = true) => {
+    const getTicketLogs = async () => {
+        const response = await axios.get("ticket-logs", {
+            params: {
+                ticketId,
+            },
+        });
+
+        return response?.data?.data || [];
+    };
+
+    return useQuery({
+        queryKey: ["ticketLogs", ticketId],
+        queryFn: () => getTicketLogs(),
+        enabled: !!ticketId && enabled,
+    });
+};
+
+export const usePublicTicket = (ticketId, token) => {
+    const getPublicTicket = async () => {
+        const response = await axios.get("public/ticket", {
+            params: {
+                ticketId,
+                token,
+            },
+        });
+
+        return response?.data?.data;
+    };
+
+    return useQuery({
+        queryKey: ["publicTicket", ticketId, token],
+        queryFn: () => getPublicTicket(),
+        enabled: !!ticketId && !!token,
+        retry: false,
+    });
+};
+
 export const useUpdateTicket = (closeModel) => {
     return useMutation({
         mutationFn: (data) => {
@@ -87,6 +125,23 @@ export const useUpdateTicket = (closeModel) => {
             const typeMessage = typeof message;
 
             const errors = typeMessage === "string" ? [message] : sumErrors(message);
+            errors.forEach((error) => toast.error(error));
+        },
+    });
+};
+
+export const useCreateTicketLog = (afterSuccess) => {
+    return useMutation({
+        mutationFn: (data) => axios.post("ticket-logs", data),
+        onSuccess: () => {
+            toast.success("Review sent successfully");
+            afterSuccess?.();
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message || error?.response?.data;
+            const typeMessage = typeof message;
+
+            const errors = typeMessage === "string" ? [message] : message ? sumErrors(message) : ["Something went wrong"];
             errors.forEach((error) => toast.error(error));
         },
     });
