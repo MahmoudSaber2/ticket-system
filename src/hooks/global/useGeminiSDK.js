@@ -1,7 +1,7 @@
 // Import lib
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKey = "AIzaSyCrGPauJKLnpdTp5Cxr0IoBd1CIiwANo90";
+const apiKey = "AIzaSyDLGn08DGtEDFPzI5RVKyUyaoM6wXOJ_7M";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
@@ -23,7 +23,7 @@ export const useGeminiSDK = () => {
     });
 
     const run = async (input) => {
-        const result = await chatSession.sendMessage(`Translate this text to English: ${input}`);
+        const result = await chatSession.sendMessage(`Translate this text to Arabic and Explain it and tell me what the user need to fix: ${input}`);
         
         return result.response.text();
     };
