@@ -4,7 +4,7 @@ import { Modal, Table, TableHeader, UiContainer } from "../../components/common"
 import { useFilter, useTable } from "../../store";
 
 import { TicketColumnObj } from "../../templates/column/TicketColumnObj";
-import { useDeleteTicket, useTickets } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { useDeleteTicket, useTickets, useAllTickets } from "../../hooks/dashboard/tickets/useTicketsHooks";
 import TicketModalForm from "./TicketModalForm";
 
 const TicketTable = () => {
@@ -15,10 +15,25 @@ const TicketTable = () => {
 
     const { data: tickets, isLoading, refetch } = useTickets({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
     const { mutate: deleteTicket } = useDeleteTicket(refetch);
+    
+    // New hook for fetching all tickets for export
+    const { refetch: fetchAllTickets } = useAllTickets({ filter: filterData });
 
     const viewTicket = (id) => {
         setIsModalOpen(true);
         setDetailsId(id);
+    };
+
+    const columns = TicketColumnObj({
+        deleteFunction: (id) => deleteTicket({ ticketId: id }),
+        viewFunction: (id) => viewTicket(id),
+    });
+
+    // Function to fetch all tickets and return data for export
+    const handleFetchAllForExport = async () => {
+        const result = await fetchAllTickets();
+        // useQuery returns { data, error, isLoading, etc. } from refetch
+        return result?.data || [];
     };
 
     return (
@@ -26,6 +41,9 @@ const TicketTable = () => {
             <TableHeader
                 ListName={"Tickets"}
                 dataLength={pagenation?.total}
+                data={tickets}
+                columns={columns}
+                fetchAll={handleFetchAllForExport}
             />
 
             <Table
@@ -33,10 +51,7 @@ const TicketTable = () => {
                 onChange={setPagenation}
                 tableParams={pagenation}
                 isPagination={true}
-                columns={TicketColumnObj({
-                    deleteFunction: (id) => deleteTicket({ ticketId: id }),
-                    viewFunction: (id) => viewTicket(id),
-                })}
+                columns={columns}
                 data={tickets}
             />
 

@@ -21,6 +21,12 @@ const UsersTable = () => {
         setIsModalOpen(true);
     };
 
+    const columns = AdminColumnObj({
+        deleteFunction: (id) => deleteAdmin({ userId: id }),
+        editFunction: (id) => editAdmin(id),
+        changeStatus: (id, status) => changeStatus({ userId: id, status }),
+    });
+
     return (
         <UiContainer>
             <TableHeader
@@ -28,6 +34,9 @@ const UsersTable = () => {
                 dataLength={pagenation?.total}
                 buttonName={GetPermission("create_user") ? "Aggiungi admin" : false}
                 onClick={() => setIsModalOpen(true)}
+                data={admins}
+                columns={columns}
+                showExport={false}
             />
 
             <Table
@@ -35,11 +44,7 @@ const UsersTable = () => {
                 onChange={setPagenation}
                 tableParams={pagenation}
                 isPagination={true}
-                columns={AdminColumnObj({
-                    deleteFunction: (id) => deleteAdmin({ userId: id }),
-                    editFunction: (id) => editAdmin(id),
-                    changeStatus: (id, status) => changeStatus({ userId: id, status }),
-                })}
+                columns={columns}
                 data={admins}
             />
 

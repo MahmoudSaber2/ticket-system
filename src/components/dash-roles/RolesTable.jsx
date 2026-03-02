@@ -20,6 +20,11 @@ const RolesTable = () => {
         setIsModalOpen(true);
     };
 
+    const columns = RoleColumnObj({
+        deleteFunction: (id) => deleteRole({ roleId: id }),
+        editFunction: (id) => editAdmin(id),
+    });
+
     return (
         <UiContainer>
             <TableHeader
@@ -27,6 +32,9 @@ const RolesTable = () => {
                 dataLength={pagenation?.total}
                 buttonName={GetPermission("create_role") ? "Aggiungi Ruolo" : false}
                 onClick={() => setIsModalOpen(true)}
+                data={admins}
+                columns={columns}
+                showExport={false}
             />
 
             <Table
@@ -34,10 +42,7 @@ const RolesTable = () => {
                 onChange={setPagenation}
                 tableParams={pagenation}
                 isPagination={true}
-                columns={RoleColumnObj({
-                    deleteFunction: (id) => deleteRole({ roleId: id }),
-                    editFunction: (id) => editAdmin(id),
-                })}
+                columns={columns}
                 data={admins}
             />
 

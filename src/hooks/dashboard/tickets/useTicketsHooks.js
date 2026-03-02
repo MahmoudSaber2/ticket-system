@@ -33,6 +33,65 @@ export const useTickets = (pagination, setPagination, resetParamPageId) => {
     });
 };
 
+export const useAllTickets = (pagination) => {
+    const getAllTickets = async () => {
+        // First, get the first page to determine total count
+        const firstResponse = await axios.get("admin/tickets", {
+            params: {
+                page: 1,
+                pageSize: 100, // Use a large page size to reduce number of calls
+                filter: pagination?.filter,
+            },
+        });
+
+        const {
+            data: {
+                pagination: { total },
+                result: { tickets: firstTickets },
+            },
+        } = firstResponse;
+
+        // If total is less than or equal to first page size, return what we have
+        if (total <= 100) {
+            return firstTickets.map((ticket) => ({ ...ticket, key: ticket.ticketId }));
+        }
+
+        // Calculate number of pages needed
+        const totalPages = Math.ceil(total / 100);
+        const allTickets = [...firstTickets];
+
+        // Fetch remaining pages in parallel (batches of 5 to avoid overwhelming the server)
+        for (let i = 2; i <= totalPages; i += 5) {
+            const batchPromises = [];
+            for (let j = i; j < i + 5 && j <= totalPages; j++) {
+                batchPromises.push(
+                    axios.get("admin/tickets", {
+                        params: {
+                            page: j,
+                            pageSize: 100,
+                            filter: pagination?.filter,
+                        },
+                    })
+                );
+            }
+
+            const batchResponses = await Promise.all(batchPromises);
+            batchResponses.forEach((response) => {
+                const tickets = response.data.result.tickets;
+                allTickets.push(...tickets);
+            });
+        }
+
+        return allTickets.map((ticket) => ({ ...ticket, key: ticket.ticketId }));
+    };
+
+    return useQuery({
+        queryKey: ["ticketsAll", pagination?.filter],
+        queryFn: () => getAllTickets(),
+        enabled: false, // Only fetch when explicitly called
+    });
+};
+
 export const useCreateTicket = (resetForm) => {
     return useMutation({
         mutationFn: (data) => {

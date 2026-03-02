@@ -20,6 +20,11 @@ const UsersTable = () => {
         setIsModalOpen(true);
     };
 
+    const columns = CustomerColumnObj({
+        deleteFunction: (id) => deleteUser({ customerId: id }),
+        editFunction: (id) => editUser(id),
+    });
+
     return (
         <UiContainer>
             <TableHeader
@@ -27,6 +32,9 @@ const UsersTable = () => {
                 dataLength={pagenation?.total}
                 buttonName={GetPermission("create_customer") ? "Aggiungi utente" : false}
                 onClick={() => setIsModalOpen(true)}
+                data={users}
+                columns={columns}
+                showExport={false}
             />
 
             <Table
@@ -34,10 +42,7 @@ const UsersTable = () => {
                 onChange={setPagenation}
                 tableParams={pagenation}
                 isPagination={true}
-                columns={CustomerColumnObj({
-                    deleteFunction: (id) => deleteUser({ customerId: id }),
-                    editFunction: (id) => editUser(id),
-                })}
+                columns={columns}
                 data={users}
             />
 
