@@ -1,6 +1,6 @@
 /* eslint-disable tailwindcss/no-custom-classname */
-import React, { useRef } from "react";
-import { Editor } from "@tinymce/tinymce-react";
+import React from "react";
+import JoditEditor from "jodit-react";
 import { Form, message, Upload } from "antd";
 
 import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
@@ -15,7 +15,7 @@ const { Dragger } = Upload;
 
 const TicketForm = () => {
     const [form] = Form.useForm();
-    const editorRef = useRef(null);
+    const [description, setDescription] = React.useState("");
 
     const [branches, setBranches] = React.useState([]);
     // Hooks
@@ -23,10 +23,55 @@ const TicketForm = () => {
     const { data: selects, isLoading } = useSelects();
     const { mutate: create, isPending } = useCreateTicket(() => {
         form.resetFields();
-        editorRef.current?.setContent("");
+        setDescription("");
     });
 
     const branch = GetOptions(branches, "branches")?.[0]?.value;
+    const handleDescriptionChange = (content) => {
+        setDescription(content);
+        form.setFieldValue("description", content);
+    };
+
+    const editorConfig = React.useMemo(
+        () => ({
+            height: 280,
+            readonly: false,
+            toolbarAdaptive: false,
+            placeholder: "Inserisci la descrizione",
+            buttons: [
+                "undo",
+                "redo",
+                "|",
+                "bold",
+                "italic",
+                "underline",
+                "brush",
+                "|",
+                "ul",
+                "ol",
+                "|",
+                "left",
+                "center",
+                "right",
+                "justify",
+                "|",
+                "link",
+                "image",
+                "table",
+                "|",
+                "source",
+                "fullsize",
+            ],
+            askBeforePasteHTML: false,
+            askBeforePasteFromWord: false,
+            defaultActionOnPaste: "insert_clear_html",
+            style: {
+                fontFamily: "Inter, sans-serif",
+                fontSize: "16px",
+            },
+        }),
+        []
+    );
 
     const TicketsField = TicketObj({
         customes: GetOptions(selects, "customers") || [],
@@ -110,41 +155,10 @@ const TicketForm = () => {
 
                 <div className="mb-4 grid grid-cols-2 gap-4">{TicketsField}</div>
                 <div className="flex flex-col gap-5">
-                    <Editor
-                        apiKey={"291fk9weadufle2zus63f63n0mrhi4fkyk6za2k25oi6ic18"}
-                        onInit={(evt, editor) => {
-                            // @ts-ignore
-                            editorRef.current = editor;
-                        }}
-                        onEditorChange={(content) => form.setFieldValue("description", content)}
-                        initialValue={form.getFieldValue("description")}
-                        value={form.getFieldValue("description")}
-                        init={{
-                            height: 280,
-                            menubar: false,
-                            plugins: [
-                                "advlist",
-                                "autolink",
-                                "lists",
-                                "link",
-                                "image",
-                                "charmap",
-                                "preview",
-                                "anchor",
-                                "searchreplace",
-                                "visualblocks",
-                                "codesample",
-                                "fullscreen",
-                                "insertdatetime",
-                                "media",
-                                "table",
-                            ],
-                            toolbar:
-                                "undo redo | " +
-                                "codesample | bold italic forecolor | alignleft aligncenter |" +
-                                "alignright alignjustify | bullist numlist",
-                            content_style: "body { font-family:Inter; font-size:16px }",
-                        }}
+                    <JoditEditor
+                        value={description}
+                        config={editorConfig}
+                        onChange={handleDescriptionChange}
                     />
                     <Dragger {...props}>
                         <p className="ant-upload-drag-icon">

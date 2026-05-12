@@ -140,3 +140,7 @@ body {
 :where(.css-dev-only-do-not-override-kghr11).ant-image {
 	width: 100% !important;
 }
+
+.jodit-status-bar {
+	display: none !important;
+}
