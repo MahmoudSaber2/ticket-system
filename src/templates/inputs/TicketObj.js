@@ -75,7 +75,7 @@ export const TicketObj = ({ customes, azienda, tags, inEdit }) => {
 		{
 			name: "description",
 			label: "Descrizione",
-			type: "textarea",
+			type: "text",
 			placeholder: "Inserisci la descrizione",
 			hidden: true,
 		},
