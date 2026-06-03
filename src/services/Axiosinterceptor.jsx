@@ -1,28 +1,28 @@
 import { useEffect } from "react";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 
 const AxiosInterceptor = ({ children }) => {
-    const [cookies] = useCookies();
-    const token = cookies?.token;
+    // We still use useCookies to trigger a re-render if needed,
+    // but the actual token for the request is read dynamically.
 
     axios.defaults.baseURL = "https://customerservicebe.testingelmo.com/api/v1/";
-    axios.defaults.headers.post.Authorization = `Bearer ${token}`;
-    axios.defaults.headers.delete.Authorization = `Bearer ${token}`;
-    axios.defaults.headers.get.Authorization = `Bearer ${token}`;
-    axios.defaults.headers.put.Authorization = `Bearer ${token}`;
+    
+    // It's better not to set default headers dynamically here on every render,
+    // we'll let the interceptor handle it for all methods.
 
     useEffect(() => {
-        // Add a request interceptor
         const requestInterceptor = axios.interceptors.request.use(
             (config) => {
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
+                // Dynamically read the token from cookies just before the request is sent.
+                const match = document.cookie.match(/(^| )token=([^;]+)/);
+                const latestToken = match ? match[2] : null;
+
+                if (latestToken) {
+                    config.headers.Authorization = `Bearer ${latestToken}`;
                 }
                 return config;
             },
             (error) => {
-                // Do something with request error
                 return Promise.reject(error);
             }
         );
@@ -30,7 +30,7 @@ const AxiosInterceptor = ({ children }) => {
         return () => {
             axios.interceptors.request.eject(requestInterceptor);
         };
-    }, [token]);
+    }, []); // Empty dependency array so we only set this interceptor up once
 
     return <>{children}</>;
 };
