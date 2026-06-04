@@ -1,6 +1,6 @@
 import { Form } from "antd";
 
-import { FilterWrapper, UiContainer, SelectInput, TextInput } from "../../components/common";
+import { FilterWrapper, UiContainer, SelectInput, TextInput, DateInput } from "../../components/common";
 import { TicketFilterInputs } from "../../templates/inputs/FiltersObj";
 import { useFilter } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
@@ -15,12 +15,32 @@ const TicketFilter = () => {
 
     const { handelFormChange } = useFormDataChanges(filterData, (newFilterData) => setFilterData(newFilterData));
 
+    const handleValuesChange = (changedValues) => {
+        const key = Object.keys(changedValues)[0];
+        const value = changedValues[key];
+
+        // Format dayjs date objects to string before passing to filter
+        if (value && typeof value === "object" && value.format) {
+            handelFormChange({ [key]: value.format("YYYY-MM-DD") });
+        } else {
+            handelFormChange(changedValues);
+        }
+    };
+
     const FilterInputs = TicketFilterInputs({
         customes: GetOptions(selects, "customers") || [],
         azienda: GetOptions(selects, "companies") || [],
         tags: GetOptions(selects, "parameters") || [],
     }).map((input) => {
-        const InputComponent = input?.type === "select" ? SelectInput : TextInput;
+        let InputComponent;
+        if (input?.type === "select") {
+            InputComponent = SelectInput;
+        } else if (input?.type === "date") {
+            InputComponent = DateInput;
+        } else {
+            InputComponent = TextInput;
+        }
+
         return (
             <Form.Item
                 key={input.name}
@@ -40,7 +60,7 @@ const TicketFilter = () => {
         <Form
             form={form}
             layout="vertical"
-            onValuesChange={handelFormChange}>
+            onValuesChange={handleValuesChange}>
             <UiContainer>
                 <FilterWrapper
                     className="border-none"

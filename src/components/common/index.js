@@ -1,5 +1,6 @@
 import TextInput from "./Form/TextInput";
 import SelectInput from "./Form/SelectInput";
+import DateInput from "./Form/DateInput";
 import Buttons from "./Buttons";
 import TableButtons from "./TableButtons";
 import Table from "./Table";
@@ -14,6 +15,7 @@ import StatusBadge from "./global/StatusBadge";
 export {
     TextInput,
     SelectInput,
+    DateInput,
     Buttons,
     TableButtons,
     Table,

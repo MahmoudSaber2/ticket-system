@@ -48,6 +48,18 @@ export const TicketFilterInputs = ({ customes, azienda, tags }) => {
             placeholder: "Inserisci lo stato",
             options: StatusOptions,
         },
+        {
+            name: "fromDate",
+            label: "Da Data",
+            type: "date",
+            placeholder: "Seleziona data inizio",
+        },
+        {
+            name: "toDate",
+            label: "A Data",
+            type: "date",
+            placeholder: "Seleziona data fine",
+        },
     ];
 };
 
