@@ -2,18 +2,25 @@ import { Form } from "antd";
 
 import { FilterWrapper, UiContainer, SelectInput, TextInput, DateInput } from "../../components/common";
 import { TicketFilterInputs } from "../../templates/inputs/FiltersObj";
-import { useFilter } from "../../store";
+import { useFilter, useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
 import { useFormDataChanges } from "../../hooks/global/useFormDataChanges";
+import { resetPaginationToFirstPage } from "../../utils/tickets";
 
 const TicketFilter = () => {
     const { filterData, setFilterData } = useFilter();
+    const { setPagenation } = useTable();
     const [form] = Form.useForm();
 
     const { data: selects, isLoading } = useSelects();
 
-    const { handelFormChange } = useFormDataChanges(filterData, (newFilterData) => setFilterData(newFilterData));
+    const updateTicketFilter = (newFilterData) => {
+        setPagenation(resetPaginationToFirstPage(useTable.getState().pagenation));
+        setFilterData(newFilterData);
+    };
+
+    const { handelFormChange } = useFormDataChanges(filterData, updateTicketFilter);
 
     const handleValuesChange = (changedValues) => {
         const key = Object.keys(changedValues)[0];
@@ -70,7 +77,7 @@ const TicketFilter = () => {
                     withClear={true}
                     clearFilter={() => {
                         form?.resetFields();
-                        setFilterData({});
+                        updateTicketFilter({});
                     }}>
                     {FilterInputs}
                 </FilterWrapper>

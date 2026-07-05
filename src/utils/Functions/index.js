@@ -36,7 +36,7 @@ export const StatusOptions = [
     { label: "Aperto", value: 0 },
     { label: "Chiuso", value: 1 },
     { label: "In Progress", value: 2 },
-    { label: "Rifiutare", value: 3 },
+    { label: "Rifiutato", value: 3 },
 ];
 
 export const StatusOptions2 = [

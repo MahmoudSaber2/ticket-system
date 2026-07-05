@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Cookies } from "react-cookie";
 import { MdOutlineTranslate } from "react-icons/md";
+import { FiExternalLink, FiFileText, FiImage } from "react-icons/fi";
 
 import { useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
@@ -12,6 +13,7 @@ import { Buttons, SelectInput, TextInput, Modal } from "../common";
 import { GetOptions } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { useGeminiSDK } from "../../hooks/global/useGeminiSDK";
+import { getAttachmentName, getAttachmentUrl, isImageAttachment } from "../../utils/tickets";
 
 dayjs.extend(customParseFormat);
 
@@ -61,6 +63,14 @@ const formatLogDate = (dateValue) => {
     return parsedDate.isValid() ? parsedDate.format("DD/MM/YYYY HH:mm") : dateValue;
 };
 
+const openAttachmentInNewTab = (url) => {
+    if (!url) {
+        return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+};
+
 const TicketModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
     const [form] = Form.useForm();
@@ -74,6 +84,8 @@ const TicketModalForm = ({ closeModal }) => {
     const [translate, setTranslate] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const attachments = Form.useWatch("attachments", form) || [];
+    const description = Form.useWatch("description", form);
 
     React.useEffect(() => {
         setActiveTab("details");
@@ -81,7 +93,7 @@ const TicketModalForm = ({ closeModal }) => {
 
     const showModal = () => {
         setIsLoading(true);
-        run(form.getFieldValue("description")).then((res) => {
+        run(description).then((res) => {
             setTranslate(res);
             setIsLoading(false);
             setIsModalOpen(true);
@@ -96,7 +108,7 @@ const TicketModalForm = ({ closeModal }) => {
     }).map((input) => {
         const Component = input.type === "select" ? SelectInput : input.type === "date" ? DatePicker : TextInput;
         return (
-            <Form.Item key={input.name} hidden={input?.hidden} label={input?.label} className={"w-[49%]"} name={input?.name} rules={[input?.rules]}>
+            <Form.Item key={input.name} hidden={input?.hidden} label={input?.label} className="!mb-3" name={input?.name} rules={[input?.rules]}>
                 <Component className="w-full" format="DD/MM/YYYY" rows={4} placeholder={input?.placeholder} size="large" options={input?.options} />
             </Form.Item>
         );
@@ -120,26 +132,72 @@ const TicketModalForm = ({ closeModal }) => {
             name="customer"
             onFinish={(values) => update({ ...values, ticketId: detailsId, closedAt: values?.closedAt ? values?.closedAt?.format("YYYY-MM-DD") : "", _method: "PUT" })}
             layout="vertical">
-            <div className="flex flex-wrap items-center gap-2">{TicketForm}</div>
-            {form?.getFieldValue("attachments")?.length > 0 && (
-                <div className="w-full rounded-md border p-3">
-                    <h2>Allegati</h2>
-                    <div className="grid w-full grid-cols-4 gap-4 rounded-md p-3">
-                        {form?.getFieldValue("attachments")?.map((file) => (
-                            <Image key={file?.attachmentId} src={file?.path} className="w-full rounded-md bg-slate-200 object-cover" preview={true} alt="attachment" style={{ height: "100px" }} />
-                        ))}
+            <section className="rounded-md border border-slate-200 bg-white p-4">
+                <h2 className="mb-4 text-base font-semibold text-slate-800">Informazioni ticket</h2>
+                <div className="grid gap-3 md:grid-cols-2">{TicketForm}</div>
+            </section>
+
+            {attachments.length > 0 && (
+                <section className="mt-4 w-full rounded-md border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                        <h2 className="text-base font-semibold text-slate-800">Allegati</h2>
+                        <span className="text-xs font-medium text-slate-500">{attachments.length} file</span>
                     </div>
-                </div>
+                    <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {attachments.map((file) => {
+                            const url = getAttachmentUrl(file);
+                            const name = getAttachmentName(file);
+                            const isImage = isImageAttachment(file);
+
+                            return (
+                                <div key={file?.attachmentId || url} className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+                                    {isImage ? (
+                                        <Image
+                                            src={url}
+                                            className="w-full bg-slate-100 object-cover"
+                                            preview={true}
+                                            alt={name}
+                                            style={{ height: "130px" }}
+                                        />
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => openAttachmentInNewTab(url)}
+                                            className="flex h-[130px] w-full flex-col items-center justify-center gap-2 bg-slate-100 p-4 text-center transition hover:bg-slate-200">
+                                            <FiFileText className="text-3xl text-slate-500" />
+                                            <span className="line-clamp-2 text-xs font-semibold text-slate-700">{name}</span>
+                                        </button>
+                                    )}
+                                    <div className="flex items-center justify-between gap-2 border-t border-slate-200 px-3 py-2">
+                                        <div className="flex min-w-0 items-center gap-2">
+                                            {isImage ? <FiImage className="shrink-0 text-slate-500" /> : <FiFileText className="shrink-0 text-slate-500" />}
+                                            <span className="truncate text-xs font-medium text-slate-700">{name}</span>
+                                        </div>
+                                        {!isImage && (
+                                            <button
+                                                type="button"
+                                                onClick={() => openAttachmentInNewTab(url)}
+                                                className="shrink-0 rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                                                aria-label={`Apri ${name} in una nuova pagina`}>
+                                                <FiExternalLink />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
             )}
-            <div className="relative mt-4 w-full rounded-md border p-3">
-                <h2>Descrizione</h2>
+            <section className="relative mt-4 w-full rounded-md border border-slate-200 bg-white p-4">
+                <h2 className="mb-3 text-base font-semibold text-slate-800">Descrizione</h2>
                 {cookies.get("role")?.name === "SuperAdmin" && (
                     <div onClick={() => showModal()} className="absolute right-3 top-3 cursor-pointer rounded-md bg-cyan-500 p-2">
                         {isLoading ? <Spin size="small" /> : <MdOutlineTranslate className="text-xl text-white" />}
                     </div>
                 )}
-                <pre className="w-full whitespace-pre-wrap text-xl font-bold" dangerouslySetInnerHTML={{ __html: form.getFieldValue("description") }} />
-            </div>
+                <pre className="w-full whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-800" dangerouslySetInnerHTML={{ __html: description }} />
+            </section>
             <Buttons className="mt-4" type="primary" size="large" block loading={false} htmlType="submit">
                 {detailsId ? "Modifica" : "Salva"}
             </Buttons>

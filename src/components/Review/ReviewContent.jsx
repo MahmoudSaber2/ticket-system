@@ -17,7 +17,7 @@ const statusStyle = {
     Aperto: "bg-sky-100 text-sky-700",
     Chiuso: "bg-emerald-200 text-emerald-700",
     "In Progress": "bg-indigo-100 text-indigo-700",
-    Rifiutare: "bg-rose-100 text-rose-700",
+    Rifiutato: "bg-rose-100 text-rose-700",
 };
 
 const decisionStatusMap = {
