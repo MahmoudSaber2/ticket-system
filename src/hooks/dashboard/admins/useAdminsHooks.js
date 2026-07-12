@@ -42,9 +42,9 @@ export const useCreateAdmin = (closeModel) => {
             axios.post(`admin/users/create`, data, {
                 headers: { "Content-Type": "multipart/form-data" },
             }),
-        onSuccess: () => {
+        onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: ["admins"] });
-            toast.success("Team member created successfully");
+            toast.success(response.data?.invitationQueued ? "Invitation sent successfully" : "Team member created successfully");
             closeModel();
         },
         onError: (error) => {
@@ -128,6 +128,23 @@ export const useDeleteAdmin = (refetch) => {
 
             const errors = typeMessage === "string" ? [message] : sumErrors(message);
             errors.forEach((error) => toast.error(error));
+        },
+    });
+};
+
+export const useResendInvitation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (invitationId) => axios.post(`admin/account-invitations/${invitationId}/resend`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["admins"] });
+            toast.success("Invitation sent again");
+        },
+        onError: (error) => {
+            const message = error?.response?.data?.message;
+            const errors = typeof message === "string" ? [message] : sumErrors(message);
+            errors.forEach((errorMessage) => toast.error(errorMessage));
         },
     });
 };

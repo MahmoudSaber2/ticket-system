@@ -29,14 +29,14 @@ export const AdminObj = ({ inEditMode }) => {
             placeholder: "Inserisci il email",
             rules: { required: true, message: "Inserisci il email" },
         },
-        {
+        ...(inEditMode ? [{
             name: "password",
-            label: "Password",
+            label: "Nuova password",
             type: "password",
-            placeholder: "Inserisci il password",
-            rules: inEditMode ? {} : { required: true, message: "Inserisci il password" },
+            placeholder: "Lascia vuoto per non modificarla",
+            rules: {},
             isPassword: true,
-        },
+        }] : []),
         {
             name: "phone",
             label: "Numero di telefono",

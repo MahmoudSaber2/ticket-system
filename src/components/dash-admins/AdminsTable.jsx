@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useFilter, useTable } from "../../store";
-import { useAdmins, useChangeStatus, useDeleteAdmin } from "../../hooks/dashboard/admins/useAdminsHooks";
+import { useAdmins, useChangeStatus, useDeleteAdmin, useResendInvitation } from "../../hooks/dashboard/admins/useAdminsHooks";
 import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { AdminColumnObj } from "../../templates/column/AdminColumnObj";
 import AdminModalForm from "./AdminModalForm";
@@ -18,6 +18,7 @@ const UsersTable = () => {
     const { mutate: changeStatus } = useChangeStatus(() => refetch());
 
     const { mutate: deleteAdmin } = useDeleteAdmin(refetch);
+    const resendInvitation = useResendInvitation();
     const editAdmin = (id) => {
         setDetailsId(id);
         setIsModalOpen(true);
@@ -27,6 +28,7 @@ const UsersTable = () => {
         deleteFunction: (id) => deleteAdmin({ userId: id }),
         editFunction: (id) => editAdmin(id),
         changeStatus: (id, status) => changeStatus({ userId: id, status }),
+        resendInvitation: (invitationId) => resendInvitation.mutate(invitationId),
     });
 
     return (
@@ -52,6 +54,7 @@ const UsersTable = () => {
             />
 
             <Modal
+                width={920}
                 title={detailsId ? "Modifica persona" : "Aggiungi persona"}
                 isModalOpen={isModalOpen}
                 onClose={() => {

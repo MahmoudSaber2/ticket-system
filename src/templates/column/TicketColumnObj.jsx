@@ -1,3 +1,4 @@
+import { Tooltip } from "antd";
 import { StatusBadge, TableButtons } from "../../components/common";
 import { GetPermission } from "../../utils/Functions";
 
@@ -7,6 +8,7 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
             key: "1",
             title: "Ticket Numero",
             dataIndex: "ticketNumber",
+            render: (value) => <span className="font-mono text-sm font-medium text-slate-800">{value}</span>,
         },
         {
             key: "2",
@@ -22,7 +24,9 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
             key: "4",
             title: "Descrizione",
             dataIndex: "description",
-            render: (value) => <p className="w-full max-w-full truncate">{value?.slice(0, 50)}</p>,
+            render: (value) => <Tooltip title={value}>
+                <p className="max-w-72 truncate text-slate-600">{value}</p>
+            </Tooltip>,
         },
         {
             key: "5",
@@ -54,6 +58,8 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
         {
             key: "10",
             title: "",
+            fixed: "right",
+            width: 80,
             render: (_, record) => {
                 return (
                     <TableButtons

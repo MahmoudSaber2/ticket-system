@@ -18,7 +18,11 @@ const TableHeader = ({
     }];
 
     return (
-        <div className="flex flex-row-reverse flex-wrap items-center justify-between gap-3 py-5">
+        <div className="flex flex-col gap-4 pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 className="text-xl font-semibold text-slate-900">{ListName}</h1>
+                <p className="mt-1 text-sm text-slate-500">{dataLength || 0} elementi</p>
+            </div>
             <div className="flex items-center gap-3">
                 {buttonName && <Button type="primary" onClick={onClick} size="large">{buttonName}</Button>}
                 {showExport && exportAction && (
@@ -29,7 +33,6 @@ const TableHeader = ({
                     </Dropdown>
                 )}
             </div>
-            <h1 className="text-xl font-bold">{dataLength} {ListName}</h1>
         </div>
     );
 };
