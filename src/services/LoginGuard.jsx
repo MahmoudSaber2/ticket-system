@@ -1,13 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-import { useCookies } from "react-cookie";
+import { useSessionStore } from "../store";
 
 const LoginGuard = (Component) => {
     const Wrapper = (props) => {
-        const [cookies] = useCookies();
-        const profile = cookies?.profile;
-
-        return profile?.userId > 0 ? <Navigate to="/dashboard/tickets" /> : <Component {...props} />;
+        const status = useSessionStore((state) => state.status);
+        return status === "authenticated" ? <Navigate to="/dashboard/tickets" replace /> : <Component {...props} />;
     };
     return Wrapper;
 };

@@ -1,6 +1,28 @@
 import { create } from "zustand";
 
-export const useLoginStore = create((set) => ({}));
+export const useSessionStore = create((set) => ({
+    accessToken: null,
+    status: "booting",
+    profile: null,
+    role: null,
+    roles: [],
+    permissions: [],
+    accountType: null,
+    tenant: null,
+    setAccessToken: (accessToken) => set({ accessToken }),
+    setSession: (session) => set({ ...session, status: "authenticated" }),
+    setStatus: (status) => set({ status, accessToken: null }),
+    clearSession: (status = "unauthenticated") => set({
+        accessToken: null,
+        status,
+        profile: null,
+        role: null,
+        roles: [],
+        permissions: [],
+        accountType: null,
+        tenant: null,
+    }),
+}));
 
 export const useCurrentPageName = create((set) => ({
     currentPageName: "Pannello",

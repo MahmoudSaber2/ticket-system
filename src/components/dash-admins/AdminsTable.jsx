@@ -6,11 +6,13 @@ import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { AdminColumnObj } from "../../templates/column/AdminColumnObj";
 import AdminModalForm from "./AdminModalForm";
 import { GetPermission } from "../../utils/Functions";
+import { useResourceExport } from "../../hooks/dashboard/useResourceExport";
 
 const UsersTable = () => {
     const { filterData } = useFilter();
     const { pagenation, detailsId, setDetailsId, setPagenation } = useTable();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const exportUsers = useResourceExport("users");
 
     const { data: admins, isLoading, refetch } = useAdmins({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
     const { mutate: changeStatus } = useChangeStatus(() => refetch());
@@ -36,7 +38,8 @@ const UsersTable = () => {
                 onClick={() => setIsModalOpen(true)}
                 data={admins}
                 columns={columns}
-                showExport={false}
+                exportAction={() => exportUsers.mutate(filterData)}
+                exporting={exportUsers.isPending}
             />
 
             <Table

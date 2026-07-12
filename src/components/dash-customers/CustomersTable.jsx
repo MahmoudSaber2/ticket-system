@@ -6,11 +6,13 @@ import { Modal, Table, TableHeader, UiContainer } from "../common";
 import { CustomerColumnObj } from "../../templates/column/CustomerColumnObj";
 import CustomerModalForm from "./CustomerModalForm";
 import { GetPermission } from "../../utils/Functions";
+import { useResourceExport } from "../../hooks/dashboard/useResourceExport";
 
 const UsersTable = () => {
     const { filterData } = useFilter();
     const { pagenation, detailsId, setDetailsId, setPagenation } = useTable();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const exportCustomers = useResourceExport("customers");
 
     const { data: users, isLoading, refetch } = useCustomes({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
 
@@ -34,7 +36,8 @@ const UsersTable = () => {
                 onClick={() => setIsModalOpen(true)}
                 data={users}
                 columns={columns}
-                showExport={false}
+                exportAction={() => exportCustomers.mutate(filterData)}
+                exporting={exportCustomers.isPending}
             />
 
             <Table

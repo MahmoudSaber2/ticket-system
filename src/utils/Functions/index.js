@@ -1,4 +1,4 @@
-import { Cookies } from "react-cookie";
+import { useSessionStore } from "../../store";
 
 export function GetOptions(arr, name) {
     const options = arr?.find((item) => item?.label === name)?.options;
@@ -18,8 +18,7 @@ export function sumErrors(errorObject) {
 }
 
 export function GetPermission(name) {
-    const cookies = new Cookies();
-    const permission = cookies.get("permissions");
+    const permission = useSessionStore.getState().permissions;
     
     const getAccess = permission?.find((item) => item?.permissionName === name)?.access;
 

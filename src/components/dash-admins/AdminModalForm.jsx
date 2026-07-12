@@ -1,4 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
 import { Button, Form, Image, Upload } from "antd";
 import React from "react";
 

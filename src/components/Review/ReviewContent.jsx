@@ -1,75 +1,15 @@
 import React from "react";
-import dayjs from "dayjs";
 import { Divider, Image, Select, Spin } from "antd";
 import { useSearchParams } from "react-router-dom";
 
 import { Buttons, TextInput } from "../common";
 import { useCreateTicketLog, usePublicTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
 import { StatusOptions, UrgenzaOptions } from "../../utils/Functions";
-
-const urgencyStyle = {
-    Rosso: "bg-red-100 text-red-700",
-    Giallo: "bg-amber-100 text-amber-700",
-    Verde: "bg-green-100 text-green-700",
-};
-
-const statusStyle = {
-    Aperto: "bg-sky-100 text-sky-700",
-    Chiuso: "bg-emerald-200 text-emerald-700",
-    "In Progress": "bg-indigo-100 text-indigo-700",
-    Rifiutato: "bg-rose-100 text-rose-700",
-};
+import { apiErrorMessage, optionLabel, ReadOnlyField, reviewDate, statusStyle, urgencyStyle } from "./reviewPresentation";
 
 const decisionStatusMap = {
     approved: 1,
     rejected: 3,
-};
-
-const getOptionLabel = (options, value) => {
-    return options?.find((item) => item?.value === value)?.label || "-";
-};
-
-const getApiErrorMessage = (error) => {
-    const responseData = error?.response?.data;
-
-    if (typeof responseData === "string") {
-        return responseData;
-    }
-
-    if (typeof responseData?.message === "string") {
-        return responseData.message;
-    }
-
-    if (typeof responseData?.error === "string") {
-        return responseData.error;
-    }
-
-    return "";
-};
-
-const formatDate = (date) => {
-    if (!date) {
-        return "Non impostata";
-    }
-
-    const parsedDate = dayjs(date);
-    return parsedDate.isValid() ? parsedDate.format("DD/MM/YYYY") : date;
-};
-
-const ReadOnlyField = ({ label, value, required = false, tone }) => {
-    return (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="mb-2 text-sm font-medium text-slate-500">
-                {required && <span className="mr-1 text-red-500">*</span>}
-                {label}
-            </p>
-            {tone ? (
-                <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${tone}`}>{value || "-"}</span>
-            ) : (
-                <p className="text-base font-semibold text-slate-800">{value || "-"}</p>
-            )}
-        </div>
-    );
 };
 
 const ReviewContent = () => {
@@ -95,8 +35,8 @@ const ReviewContent = () => {
             setRejectReason("");
         }
     };
-    const apiErrorMessage = getApiErrorMessage(error);
-    const isUsedLinkError = apiErrorMessage.toLowerCase().includes("already been used");
+    const errorMessage = apiErrorMessage(error);
+    const isUsedLinkError = errorMessage.toLowerCase().includes("already been used");
 
     if (!ticketId || !token) {
         return (
@@ -132,7 +72,7 @@ const ReviewContent = () => {
             return (
                 <section className="w-full rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center shadow-lg">
                     <h2 className="text-xl font-semibold text-amber-700">Link già utilizzato</h2>
-                    <p className="mt-2 text-sm text-amber-700">{apiErrorMessage}</p>
+                    <p className="mt-2 text-sm text-amber-700">{errorMessage}</p>
                 </section>
             );
         }
@@ -145,12 +85,12 @@ const ReviewContent = () => {
         );
     }
 
-    const urgencyLabel = getOptionLabel(UrgenzaOptions, ticketDetails?.importance);
-    const statusLabel = getOptionLabel(StatusOptions, ticketDetails?.status);
+    const urgencyLabel = optionLabel(UrgenzaOptions, ticketDetails?.importance);
+    const statusLabel = optionLabel(StatusOptions, ticketDetails?.status);
     const attachments = ticketDetails?.attachments || [];
     const tagName = ticketDetails?.tag?.name || ticketDetails?.parameter?.name || ticketDetails?.tag || "-";
     const ticketNumber = ticketDetails?.ticketNumber || `#${ticketDetails?.ticketId || ticketId}`;
-    const description = ticketDetails?.description || "<p>Nessuna descrizione disponibile.</p>";
+    const description = ticketDetails?.description || "Nessuna descrizione disponibile.";
     const closedAt = ticketDetails?.closedAt || ticketDetails?.closed_at;
     const isRejectDecision = decision === "rejected";
     const isSubmitDisabled = !decision || (isRejectDecision && !rejectReason.trim());
@@ -184,7 +124,7 @@ const ReviewContent = () => {
                 <ReadOnlyField label="Azienda" value={ticketDetails?.company?.name} required />
                 <ReadOnlyField label="Tag" value={tagName} />
                 <ReadOnlyField label="Stato" value={statusLabel} tone={statusStyle[statusLabel]} />
-                <ReadOnlyField label="Data chiusura" value={formatDate(closedAt)} />
+                <ReadOnlyField label="Data chiusura" value={reviewDate(closedAt)} />
             </div>
 
             <section className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -217,7 +157,7 @@ const ReviewContent = () => {
             <section className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <h2 className="text-xl font-semibold text-slate-900">Descrizione</h2>
                 <div className="mt-3 rounded-lg border border-slate-200 bg-white p-4">
-                    <div className="whitespace-pre-wrap text-base font-semibold leading-8 text-slate-800" dangerouslySetInnerHTML={{ __html: description }} />
+                    <div className="whitespace-pre-wrap text-base font-semibold leading-8 text-slate-800">{description}</div>
                 </div>
             </section>
 

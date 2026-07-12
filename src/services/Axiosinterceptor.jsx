@@ -1,38 +1,47 @@
 import { useEffect } from "react";
 import axios from "axios";
 
+import { useSessionStore } from "../store";
+import { apiBaseUrl, refreshAccessToken } from "./session";
+
+axios.defaults.baseURL = apiBaseUrl;
+axios.defaults.withCredentials = true;
+
 const AxiosInterceptor = ({ children }) => {
-    // We still use useCookies to trigger a re-render if needed,
-    // but the actual token for the request is read dynamically.
-
-    axios.defaults.baseURL = "https://customerservicebe.testingelmo.com/api/v1/";
-    
-    // It's better not to set default headers dynamically here on every render,
-    // we'll let the interceptor handle it for all methods.
-
     useEffect(() => {
-        const requestInterceptor = axios.interceptors.request.use(
-            (config) => {
-                // Dynamically read the token from cookies just before the request is sent.
-                const match = document.cookie.match(/(^| )token=([^;]+)/);
-                const latestToken = match ? match[2] : null;
-
-                if (latestToken) {
-                    config.headers.Authorization = `Bearer ${latestToken}`;
-                }
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
+        const requestId = axios.interceptors.request.use((config) => {
+            const accessToken = useSessionStore.getState().accessToken;
+            if (accessToken && !config.skipAuth) {
+                config.headers.Authorization = `Bearer ${accessToken}`;
             }
+            return config;
+        });
+        const responseId = axios.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                const request = error.config;
+                if (error.response?.status !== 401 || request?.skipRefresh || request?._retried) {
+                    return Promise.reject(error);
+                }
+                request._retried = true;
+                try {
+                    const accessToken = await refreshAccessToken();
+                    request.headers.Authorization = `Bearer ${accessToken}`;
+                    return axios(request);
+                } catch (refreshError) {
+                    useSessionStore.getState().clearSession("session-expired");
+                    return Promise.reject(refreshError);
+                }
+            },
         );
 
         return () => {
-            axios.interceptors.request.eject(requestInterceptor);
+            axios.interceptors.request.eject(requestId);
+            axios.interceptors.response.eject(responseId);
         };
-    }, []); // Empty dependency array so we only set this interceptor up once
+    }, []);
 
-    return <>{children}</>;
+    return children;
 };
 
 export default AxiosInterceptor;

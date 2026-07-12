@@ -22,12 +22,7 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
             key: "4",
             title: "Descrizione",
             dataIndex: "description",
-            render: (value) => (
-                <p
-                    className="w-full max-w-full truncate"
-                    dangerouslySetInnerHTML={{ __html: value?.slice(0, 50) }}
-                />
-            ),
+            render: (value) => <p className="w-full max-w-full truncate">{value?.slice(0, 50)}</p>,
         },
         {
             key: "5",

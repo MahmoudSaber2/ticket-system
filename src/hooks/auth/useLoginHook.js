@@ -1,59 +1,31 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useMutation } from "@tanstack/react-query";
-import { Cookies } from "react-cookie";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export const useLogin = () => {
-	const cookies = new Cookies();
-    const logOutTime = new Date(Date.now() + 8 * 60 * 60 * 1000);
+import { useSessionStore } from "../../store";
+import { loadCurrentSession, sessionStatusFor } from "../../services/session";
 
-    return useMutation({
-        mutationFn: (data) => {
-            return axios.post("admin/auth/login", data);
-        },
-        onSuccess: (response) => {
-            const { data } = response;
-            cookies.set("token", data.token);
-            cookies.set("profile", data.profile);
-            cookies.set("permissions", data.permissions);
-            cookies.set("role", data.role);
-            cookies.set("logoutTime", logOutTime);
-            toast.success("Login Successful");
-        },
-        onError: (error) => {
-            toast.error("Login Failed");
-            console.log(error);
-        },
-    });
-};
+export const useLogin = () => useMutation({
+    mutationFn: (credentials) => axios.post("admin/auth/login", credentials, { skipAuth: true, skipRefresh: true }),
+    onSuccess: async ({ data }) => {
+        await loadCurrentSession(data.token);
+        toast.success("Login Successful");
+    },
+    onError: (error) => {
+        useSessionStore.getState().clearSession(sessionStatusFor(error));
+        toast.error("Login Failed");
+    },
+});
 
 export const UseSignOut = () => {
-    const cookies = new Cookies();
-
-    const signOutFunction = async () => {
-        return await axios.post("admin/auth/logout");
-    };
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: () => signOutFunction(),
-
-        onSuccess: () => {
+        mutationFn: () => axios.post("admin/auth/logout", null, { skipRefresh: true }),
+        onSettled: () => {
+            useSessionStore.getState().clearSession();
+            queryClient.clear();
             toast.success("تم تسجيل الخروج بنجاح");
-            cookies.remove("token");
-            cookies.remove("profile");
-            cookies.remove("permissions");
-            cookies.remove("role");
-            cookies.remove("logoutTime");
-            window.location.href = "/auth";
-        },
-
-        onError: () => {
-            cookies.remove("token");
-            cookies.remove("profile");
-            cookies.remove("permissions");
-            cookies.remove("role");
-            cookies.remove("logoutTime");
-            window.location.href = "/auth";
         },
     });
 };

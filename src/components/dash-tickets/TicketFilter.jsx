@@ -2,7 +2,7 @@ import { Form } from "antd";
 
 import { FilterWrapper, UiContainer, SelectInput, TextInput, DateInput } from "../../components/common";
 import { TicketFilterInputs } from "../../templates/inputs/FiltersObj";
-import { useFilter, useTable } from "../../store";
+import { useFilter, useSessionStore, useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
 import { useFormDataChanges } from "../../hooks/global/useFormDataChanges";
@@ -12,6 +12,7 @@ const TicketFilter = () => {
     const { filterData, setFilterData } = useFilter();
     const { setPagenation } = useTable();
     const [form] = Form.useForm();
+    const accountType = useSessionStore((state) => state.accountType);
 
     const { data: selects, isLoading } = useSelects();
 
@@ -38,7 +39,7 @@ const TicketFilter = () => {
         customes: GetOptions(selects, "customers") || [],
         azienda: GetOptions(selects, "companies") || [],
         tags: GetOptions(selects, "parameters") || [],
-    }).map((input) => {
+    }).filter((input) => accountType === "internal" || input.name !== "company").map((input) => {
         let InputComponent;
         if (input?.type === "select") {
             InputComponent = SelectInput;

@@ -9,19 +9,21 @@ import logo from "../../assets/logo.webp";
 import { useSelects, useSelects2 } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
 import { useCreateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { useSessionStore } from "../../store";
 
 const { Dragger } = Upload;
 
-const TicketForm = () => {
+const TicketForm = ({ authenticated = false }) => {
 	const [form] = Form.useForm();
 
 	const [branches, setBranches] = React.useState([]);
 	// Hooks
 	const { mutate: getBranches } = useSelects2((values) => setBranches(values));
 	const { data: selects, isLoading } = useSelects();
+	const tenant = useSessionStore((state) => state.tenant);
 	const { mutate: create, isPending } = useCreateTicket(() => {
 		form.resetFields();
-	});
+	}, authenticated);
 
 	const branch = GetOptions(branches, "branches")?.[0]?.value;
 
@@ -29,7 +31,7 @@ const TicketForm = () => {
 		customes: GetOptions(selects, "customers") || [],
 		azienda: GetOptions(selects, "companies") || [],
 		tags: GetOptions(selects, "parameters") || [],
-	}).map((field) => {
+	}).filter((field) => !authenticated || !["pin", "companyId", "status"].includes(field.name)).map((field) => {
 		const Component = field.type === "text" ? TextInput : SelectInput;
 		return (
 			<Form.Item
@@ -55,10 +57,10 @@ const TicketForm = () => {
 	const onFinish = (values) => {
 		const updatedValues = {
 			...values,
-			branchId: branch,
+			branchId: authenticated ? tenant?.branchId : branch,
 			status: 0,
 		};
-		if (branch) {
+		if (authenticated || branch) {
 			create(updatedValues);
 		}
 	};
@@ -107,6 +109,7 @@ const TicketForm = () => {
 				</div>
 
 				<h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
+				{authenticated && tenant?.companyName && <p className="mb-4 text-center text-slate-500">{tenant.companyName}</p>}
 
 				<div className="mb-4 grid grid-cols-2 gap-4">{TicketsField}</div>
 				<div className="flex flex-col gap-5">

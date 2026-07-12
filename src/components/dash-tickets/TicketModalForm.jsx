@@ -1,80 +1,25 @@
 import React from "react";
-import { DatePicker, Empty, Form, Image, Spin, Tabs } from "antd";
+import { DatePicker, Form, Spin, Tabs } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Cookies } from "react-cookie";
 import { MdOutlineTranslate } from "react-icons/md";
-import { FiExternalLink, FiFileText, FiImage } from "react-icons/fi";
 
-import { useTable } from "../../store";
+import { useSessionStore, useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
 import { useTicketLogs, useTicketsEdit, useUpdateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
 import { Buttons, SelectInput, TextInput, Modal } from "../common";
 import { GetOptions } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { useGeminiSDK } from "../../hooks/global/useGeminiSDK";
-import { getAttachmentName, getAttachmentUrl, isImageAttachment } from "../../utils/tickets";
+import TicketAttachments from "./TicketAttachments";
+import TicketLogs from "./TicketLogs";
 
 dayjs.extend(customParseFormat);
-
-const getLogBadge = (status, text) => {
-    const normalizedText = String(text || "").toLowerCase();
-
-    if (normalizedText.includes("view")) {
-        return {
-            label: "Visualizzato",
-            className: "border-sky-200 bg-sky-50 text-sky-700",
-        };
-    }
-
-    const statusMap = {
-        0: {
-            label: "Aperto",
-            className: "border-orange-200 bg-orange-50 text-orange-700",
-        },
-        1: {
-            label: "Approvato",
-            className: "border-emerald-200 bg-emerald-50 text-emerald-700",
-        },
-        2: {
-            label: "In Progress",
-            className: "border-indigo-200 bg-indigo-50 text-indigo-700",
-        },
-        3: {
-            label: "Rifiutato",
-            className: "border-rose-200 bg-rose-50 text-rose-700",
-        },
-    };
-
-    return (
-        statusMap[Number(status)] || {
-            label: "Evento",
-            className: "border-slate-200 bg-slate-50 text-slate-700",
-        }
-    );
-};
-
-const formatLogDate = (dateValue) => {
-    if (!dateValue) {
-        return "-";
-    }
-
-    const parsedDate = dayjs(dateValue, ["DD/MM/YYYY HH:mm", "YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD"], true);
-    return parsedDate.isValid() ? parsedDate.format("DD/MM/YYYY HH:mm") : dateValue;
-};
-
-const openAttachmentInNewTab = (url) => {
-    if (!url) {
-        return;
-    }
-
-    window.open(url, "_blank", "noopener,noreferrer");
-};
 
 const TicketModalForm = ({ closeModal }) => {
     const { detailsId } = useTable();
     const [form] = Form.useForm();
-    const cookies = new Cookies();
+    const accountType = useSessionStore((state) => state.accountType);
 
     const { data: selects } = useSelects();
     const [activeTab, setActiveTab] = React.useState("details");
@@ -137,66 +82,15 @@ const TicketModalForm = ({ closeModal }) => {
                 <div className="grid gap-3 md:grid-cols-2">{TicketForm}</div>
             </section>
 
-            {attachments.length > 0 && (
-                <section className="mt-4 w-full rounded-md border border-slate-200 bg-slate-50 p-4">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                        <h2 className="text-base font-semibold text-slate-800">Allegati</h2>
-                        <span className="text-xs font-medium text-slate-500">{attachments.length} file</span>
-                    </div>
-                    <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {attachments.map((file) => {
-                            const url = getAttachmentUrl(file);
-                            const name = getAttachmentName(file);
-                            const isImage = isImageAttachment(file);
-
-                            return (
-                                <div key={file?.attachmentId || url} className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-                                    {isImage ? (
-                                        <Image
-                                            src={url}
-                                            className="w-full bg-slate-100 object-cover"
-                                            preview={true}
-                                            alt={name}
-                                            style={{ height: "130px" }}
-                                        />
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => openAttachmentInNewTab(url)}
-                                            className="flex h-[130px] w-full flex-col items-center justify-center gap-2 bg-slate-100 p-4 text-center transition hover:bg-slate-200">
-                                            <FiFileText className="text-3xl text-slate-500" />
-                                            <span className="line-clamp-2 text-xs font-semibold text-slate-700">{name}</span>
-                                        </button>
-                                    )}
-                                    <div className="flex items-center justify-between gap-2 border-t border-slate-200 px-3 py-2">
-                                        <div className="flex min-w-0 items-center gap-2">
-                                            {isImage ? <FiImage className="shrink-0 text-slate-500" /> : <FiFileText className="shrink-0 text-slate-500" />}
-                                            <span className="truncate text-xs font-medium text-slate-700">{name}</span>
-                                        </div>
-                                        {!isImage && (
-                                            <button
-                                                type="button"
-                                                onClick={() => openAttachmentInNewTab(url)}
-                                                className="shrink-0 rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-                                                aria-label={`Apri ${name} in una nuova pagina`}>
-                                                <FiExternalLink />
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </section>
-            )}
+            <TicketAttachments attachments={attachments} />
             <section className="relative mt-4 w-full rounded-md border border-slate-200 bg-white p-4">
                 <h2 className="mb-3 text-base font-semibold text-slate-800">Descrizione</h2>
-                {cookies.get("role")?.name === "SuperAdmin" && (
+                {accountType === "internal" && (
                     <div onClick={() => showModal()} className="absolute right-3 top-3 cursor-pointer rounded-md bg-cyan-500 p-2">
                         {isLoading ? <Spin size="small" /> : <MdOutlineTranslate className="text-xl text-white" />}
                     </div>
                 )}
-                <pre className="w-full whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-800" dangerouslySetInnerHTML={{ __html: description }} />
+                <pre className="w-full whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm font-medium leading-6 text-slate-800">{description}</pre>
             </section>
             <Buttons className="mt-4" type="primary" size="large" block loading={false} htmlType="submit">
                 {detailsId ? "Modifica" : "Salva"}
@@ -204,42 +98,7 @@ const TicketModalForm = ({ closeModal }) => {
         </Form>
     );
 
-    const logsTabContent = (
-        <section className="rounded-md border border-slate-200 bg-slate-50 p-4">
-            <div className="mb-4 flex items-center justify-between gap-3">
-                <h2 className="text-base font-semibold text-slate-800">Log approvazione ticket</h2>
-                {isLogsFetching && !isLogsLoading && <p className="text-xs font-medium text-slate-500">Aggiornamento...</p>}
-            </div>
-
-            {isLogsLoading ? (
-                <div className="flex min-h-[250px] items-center justify-center">
-                    <Spin size="large" />
-                </div>
-            ) : isLogsError ? (
-                <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">Impossibile caricare i logs del ticket.</div>
-            ) : ticketLogs.length === 0 ? (
-                <div className="rounded-md border border-dashed border-slate-300 bg-white py-10">
-                    <Empty description="Nessun log disponibile" />
-                </div>
-            ) : (
-                <div className="space-y-3">
-                    {ticketLogs.map((log, index) => {
-                        const badge = getLogBadge(log?.status, log?.text);
-
-                        return (
-                            <article key={log?.ticketLogId || `${log?.createdAt || "log"}-${index}`} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                                <div className="flex flex-wrap items-center justify-between gap-2">
-                                    <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`}>{badge.label}</span>
-                                    <span className="text-xs font-medium text-slate-500">{formatLogDate(log?.createdAt)}</span>
-                                </div>
-                                <p className="mt-3 text-sm font-medium leading-6 text-slate-700">{log?.text || "Nessuna descrizione disponibile."}</p>
-                            </article>
-                        );
-                    })}
-                </div>
-            )}
-        </section>
-    );
+    const logsTabContent = <TicketLogs logs={ticketLogs} loading={isLogsLoading} fetching={isLogsFetching} failed={isLogsError} />;
 
     return (
         <>
@@ -261,7 +120,7 @@ const TicketModalForm = ({ closeModal }) => {
             />
 
             <Modal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} width={600} title={"Translate Description"}>
-                <pre className="whitespace-pre-wrap text-sm font-bold" dir="rtl" dangerouslySetInnerHTML={{ __html: translate }} />
+                <pre className="whitespace-pre-wrap text-sm font-bold" dir="rtl">{translate}</pre>
             </Modal>
         </>
     );
