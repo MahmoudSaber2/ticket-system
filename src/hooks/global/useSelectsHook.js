@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 
 export const useSelects = () => {
     const getSelects = async () => {
-        const { data } = await axios.get(`https://tickets-sys-api.testingelmo.com/api/v1/selects?allSelects=companies,customers,roles,permissions,parameters=1`);
+        const { data } = await axios.get("selects?allSelects=companies,customers,roles,permissions,parameters=1");
         return data;
     };
 
@@ -15,10 +15,18 @@ export const useSelects = () => {
 
 export const useSelects2 = (updateBranches) => {
     return useMutation({
-        mutationFn: (value) => axios.get(`https://tickets-sys-api.testingelmo.com/api/v1/selects?allSelects=branches=${value}`),
+        mutationFn: (value) => axios.get(`selects?allSelects=branches=${value}`),
 
         onSuccess: (response) => {
             updateBranches(response.data);
         },
     });
 };
+
+export const useTicketSubmissionOptions = () => useQuery({
+    queryKey: ["ticket-submission-options"],
+    queryFn: async () => {
+        const { data } = await axios.get("selects?allSelects=branches,parameters=1");
+        return data;
+    },
+});

@@ -1,150 +1,109 @@
-/* eslint-disable tailwindcss/no-custom-classname */
-import React from "react";
 import { Form, message, Upload } from "antd";
-
-import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
-import { TicketObj } from "../../templates/inputs/TicketObj";
 import { InboxOutlined } from "@ant-design/icons";
-import logo from "../../assets/logo.webp";
-import { useSelects, useSelects2 } from "../../hooks/global/useSelectsHook";
-import { GetOptions } from "../../utils/Functions";
+
+import { Buttons, SelectInput, TextInput, UiContainer } from "../common";
 import { useCreateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { useTicketSubmissionOptions } from "../../hooks/global/useSelectsHook";
+import { GetOptions, UrgenzaOptions } from "../../utils/Functions";
 import { useSessionStore } from "../../store";
+import logo from "../../assets/logo.webp";
 
 const { Dragger } = Upload;
 
-const TicketForm = ({ authenticated = false }) => {
-	const [form] = Form.useForm();
+const TicketForm = () => {
+    const [form] = Form.useForm();
+    const tenant = useSessionStore((state) => state.tenant);
+    const { data: options, isLoading } = useTicketSubmissionOptions();
+    const { mutate: createTicket, isPending } = useCreateTicket(() => form.resetFields());
+    const requiresBranchSelection = tenant?.usesBranches && !tenant?.branchId;
 
-	const [branches, setBranches] = React.useState([]);
-	// Hooks
-	const { mutate: getBranches } = useSelects2((values) => setBranches(values));
-	const { data: selects, isLoading } = useSelects();
-	const tenant = useSessionStore((state) => state.tenant);
-	const { mutate: create, isPending } = useCreateTicket(() => {
-		form.resetFields();
-	}, authenticated);
+    const submitTicket = (fields) => createTicket({
+        ...fields,
+        branchId: tenant?.branchId || fields.branchId,
+    });
 
-	const branch = GetOptions(branches, "branches")?.[0]?.value;
+    const uploadProps = {
+        accept: "image/jpeg,image/png",
+        multiple: true,
+        beforeUpload: validateUpload,
+        onChange: ({ fileList }) => form.setFieldValue(
+            "attachments",
+            fileList.map((file) => file.originFileObj).filter(Boolean),
+        ),
+    };
 
-	const TicketsField = TicketObj({
-		customes: GetOptions(selects, "customers") || [],
-		azienda: GetOptions(selects, "companies") || [],
-		tags: GetOptions(selects, "parameters") || [],
-	}).filter((field) => !authenticated || !["pin", "companyId", "status"].includes(field.name)).map((field) => {
-		const Component = field.type === "text" ? TextInput : SelectInput;
-		return (
-			<Form.Item
-				key={field.name}
-				label={field.label}
-				name={field.name}
-				hidden={field?.hidden}
-				className="!mb-2"
-				rules={[field?.rules]}
-			>
-				<Component
-					allowClear
-					onChange={field?.name === "companyId" ? (e) => getBranches(e) : undefined}
-					placeholder={field.placeholder}
-					size="large"
-					isTextArea={field?.isTextArea}
-					options={field?.options}
-				/>
-			</Form.Item>
-		);
-	});
+    return (
+        <Form
+            className="my-5 w-full max-w-[800px] rounded-lg bg-white p-5"
+            form={form}
+            layout="vertical"
+            onFinish={submitTicket}
+        >
+            <UiContainer loading={isLoading}>
+                <header className="mb-5 flex items-center gap-3">
+                    <img src={logo} className="max-w-8" alt="Elmo Tech" />
+                    <div>
+                        <h1 className="text-xl font-bold">Nuovo Ticket</h1>
+                        <p className="text-sm text-slate-500">{tenant?.companyName}</p>
+                    </div>
+                </header>
 
-	const onFinish = (values) => {
-		const updatedValues = {
-			...values,
-			branchId: authenticated ? tenant?.branchId : branch,
-			status: 0,
-		};
-		if (authenticated || branch) {
-			create(updatedValues);
-		}
-	};
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Form.Item
+                        name="importance"
+                        label="Urgenza"
+                        rules={[{ required: true, message: "Seleziona l'urgenza" }]}
+                    >
+                        <SelectInput options={UrgenzaOptions} size="large" />
+                    </Form.Item>
 
-	const props = {
-		name: "file",
-		accept: "*/*",
-		showUploadList: true,
-		listType: "picture",
-		multiple: true,
-		fileList: form.getFieldValue("attachments"),
-		beforeUpload(file) {
-			const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-			if (!isJpgOrPng) {
-				message.error("You can only upload JPG/PNG file!");
-			}
-			const isLt2M = file.size / 1024 / 1024 < 2;
-			if (!isLt2M) {
-				message.error("Image must smaller than 2MB!");
-			}
-			return isJpgOrPng && isLt2M;
-		},
-		onChange(info) {
-			form.setFieldValue(
-				"attachments",
-				info.fileList?.map((file) => file.originFileObj),
-			);
-		},
-	};
+                    {requiresBranchSelection && (
+                        <Form.Item
+                            name="branchId"
+                            label="Filiale"
+                            rules={[{ required: true, message: "Seleziona la filiale" }]}
+                        >
+                            <SelectInput options={GetOptions(options, "branches") || []} size="large" />
+                        </Form.Item>
+                    )}
 
-	return (
-		<Form
-			className="my-5 w-full max-w-[800px] rounded-lg bg-white p-5"
-			form={form}
-			layout="vertical"
-			onFinish={onFinish}
-		>
-			<UiContainer loading={isLoading}>
-				<div className="flex items-center gap-3">
-					<img
-						src={logo}
-						className="max-w-8"
-						alt="logo"
-					/>
-					<h2 className="text-lg font-bold">Elmo tech</h2>
-				</div>
+                    <Form.Item name="tagId" label="Tag">
+                        <SelectInput options={GetOptions(options, "parameters") || []} size="large" allowClear />
+                    </Form.Item>
+                </div>
 
-				<h1 className="mb-5 text-center text-2xl font-bold">Nuovo Ticket</h1>
-				{authenticated && tenant?.companyName && <p className="mb-4 text-center text-slate-500">{tenant.companyName}</p>}
+                <Form.Item
+                    name="description"
+                    label="Descrizione"
+                    rules={[{ required: true, message: "Inserisci la descrizione" }]}
+                >
+                    <TextInput size="large" isTextArea rows={4} />
+                </Form.Item>
 
-				<div className="mb-4 grid grid-cols-2 gap-4">{TicketsField}</div>
-				<div className="flex flex-col gap-5">
-					<Form.Item
-						name="description"
-						label="Descrizione"
-					>
-						<TextInput
-							size="large"
-							placeholder="Descrizione"
-							name="description"
-							isTextArea
-							rows={4}
-						/>
-					</Form.Item>
-					<Dragger {...props}>
-						<p className="ant-upload-drag-icon">
-							<InboxOutlined />
-						</p>
-						<p className="ant-upload-text">Carica le tue immagini o trascinali qui</p>
-						<p className="ant-upload-hint">Per favore, carica tutte le immagini che illustrano il problema o la causa in modo dettagliato</p>
-					</Dragger>
+                <Form.Item name="attachments">
+                    <Dragger {...uploadProps}>
+                        <p className="mb-3 text-4xl text-blue-500"><InboxOutlined /></p>
+                        <p className="text-base text-slate-700">Carica le immagini o trascinale qui</p>
+                        <p className="text-sm text-slate-500">JPG o PNG, massimo 2 MB per file</p>
+                    </Dragger>
+                </Form.Item>
 
-					<Buttons
-						type="primary"
-						size="large"
-						loading={isPending}
-						htmlType="submit"
-					>
-						SALVA
-					</Buttons>
-				</div>
-			</UiContainer>
-		</Form>
-	);
+                <Buttons type="primary" size="large" loading={isPending} htmlType="submit" block>
+                    SALVA
+                </Buttons>
+            </UiContainer>
+        </Form>
+    );
 };
+
+function validateUpload(file) {
+    const isImage = ["image/jpeg", "image/png"].includes(file.type);
+    const isWithinLimit = file.size / 1024 / 1024 < 2;
+
+    if (!isImage) message.error("Puoi caricare solo immagini JPG o PNG.");
+    if (!isWithinLimit) message.error("Ogni immagine deve essere inferiore a 2 MB.");
+
+    return isImage && isWithinLimit ? false : Upload.LIST_IGNORE;
+}
 
 export default TicketForm;

@@ -26,13 +26,6 @@ export const CustomeObj = ({ azienda }) => {
             rules: { required: true, message: "Inserisci il e-mail" },
         },
         {
-            name: "pin",
-            label: "PIN",
-            type: "text",
-            placeholder: "Inserisci il pin",
-            rules: { required: true, message: "Inserisci il pin" },
-        },
-        {
             name: "companyId",
             label: "Azienda",
             type: "select",

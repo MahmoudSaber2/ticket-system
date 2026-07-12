@@ -33,13 +33,10 @@ export const useTickets = (pagination, setPagination, resetParamPageId) => {
     });
 };
 
-export const useCreateTicket = (resetForm, authenticated = false) => {
+export const useCreateTicket = (resetForm) => {
     return useMutation({
         mutationFn: (data) => {
-            const endpoint = authenticated ? "admin/tickets/create" : "tickets/create";
-            return axios.post(endpoint, data, {
-                skipAuth: !authenticated,
-                skipRefresh: !authenticated,
+            return axios.post("admin/tickets/create", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
