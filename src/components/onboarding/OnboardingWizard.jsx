@@ -28,7 +28,7 @@ const OnboardingWizard = () => {
     const panels = [
         <CompanyStep key="company" />,
         <BranchesStep key="branches" branchless={branchless} />,
-        <OwnerStep key="owner" roles={options.data.roles} branches={branchless ? [] : branches} />,
+        <OwnerStep key="owner" roles={options.data.roles} />,
         <TeamStep key="team" roles={options.data.roles} branches={branchless ? [] : branches} />,
         <pre key="review" className="max-h-96 overflow-auto rounded-lg bg-slate-50 p-4 text-sm">{JSON.stringify(form.getFieldsValue(true), null, 2)}</pre>,
     ];

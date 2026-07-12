@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, useMutation, QueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -35,7 +35,7 @@ export const useAdmins = (pagination, setPagination, resetParamPageId) => {
 };
 
 export const useCreateAdmin = (closeModel) => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (data) =>
@@ -43,8 +43,8 @@ export const useCreateAdmin = (closeModel) => {
                 headers: { "Content-Type": "multipart/form-data" },
             }),
         onSuccess: () => {
-            queryClient.invalidateQueries(["admins"]);
-            toast.success("Admin created successfully");
+            queryClient.invalidateQueries({ queryKey: ["admins"] });
+            toast.success("Team member created successfully");
             closeModel();
         },
         onError: (error) => {
@@ -57,10 +57,9 @@ export const useCreateAdmin = (closeModel) => {
     });
 };
 
-export const useAdminsEdit = (id, updateForm) => {
+export const useAdminsEdit = (id) => {
     const getAdmin = async () => {
         const response = await axios.get(`admin/users/edit`, { params: { userId: id } });
-        updateForm(response.data);
         return response.data;
     };
     return useQuery({
@@ -71,7 +70,7 @@ export const useAdminsEdit = (id, updateForm) => {
 };
 
 export const useUpdateAdmin = (closeModel) => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (data) =>
@@ -79,8 +78,8 @@ export const useUpdateAdmin = (closeModel) => {
                 headers: { "Content-Type": "multipart/form-data" },
             }),
         onSuccess: () => {
-            queryClient.invalidateQueries(["admins"]);
-            toast.success("Admin updated successfully");
+            queryClient.invalidateQueries({ queryKey: ["admins"] });
+            toast.success("Team member updated successfully");
             closeModel();
         },
         onError: (error) => {
@@ -94,12 +93,12 @@ export const useUpdateAdmin = (closeModel) => {
 };
 
 export const useChangeStatus = (refetch) => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => axios.post(`admin/users/changestatus`, data),
+        mutationFn: (data) => axios.put(`admin/users/changestatus`, data),
         onSuccess: () => {
-            queryClient.invalidateQueries(["admins"]);
+            queryClient.invalidateQueries({ queryKey: ["admins"] });
             toast.success("Admin status updated successfully");
             refetch();
         },
@@ -114,12 +113,12 @@ export const useChangeStatus = (refetch) => {
 };
 
 export const useDeleteAdmin = (refetch) => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (params) => axios.delete(`admin/users/delete`, { params }),
         onSuccess: () => {
-            queryClient.invalidateQueries(["admins"]);
+            queryClient.invalidateQueries({ queryKey: ["admins"] });
             toast.info("Admin deleted successfully");
             refetch();
         },

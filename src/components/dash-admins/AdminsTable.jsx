@@ -32,9 +32,9 @@ const UsersTable = () => {
     return (
         <UiContainer>
             <TableHeader
-                ListName={"Amministratori"}
+                ListName={"Team"}
                 dataLength={pagenation?.total}
-                buttonName={GetPermission("create_user") ? "Aggiungi admin" : false}
+                buttonName={GetPermission("create_user") ? "Aggiungi persona" : false}
                 onClick={() => setIsModalOpen(true)}
                 data={admins}
                 columns={columns}
@@ -52,7 +52,7 @@ const UsersTable = () => {
             />
 
             <Modal
-                title={detailsId ? "Modifica admin" : "Aggiungi admin"}
+                title={detailsId ? "Modifica persona" : "Aggiungi persona"}
                 isModalOpen={isModalOpen}
                 onClose={() => {
                     setIsModalOpen(false);

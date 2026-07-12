@@ -30,9 +30,9 @@ const UsersTable = () => {
     return (
         <UiContainer>
             <TableHeader
-                ListName={"Utenti"}
+                ListName={"Contatti"}
                 dataLength={pagenation?.total}
-                buttonName={GetPermission("create_customer") ? "Aggiungi utente" : false}
+                buttonName={GetPermission("create_customer") ? "Aggiungi contatto" : false}
                 onClick={() => setIsModalOpen(true)}
                 data={users}
                 columns={columns}
@@ -50,7 +50,7 @@ const UsersTable = () => {
             />
 
             <Modal
-                title={detailsId ? "Modifica utente" : "Aggiungi utente"}
+                title={detailsId ? "Modifica contatto" : "Aggiungi contatto"}
                 isModalOpen={isModalOpen}
                 onClose={() => {
                     setIsModalOpen(false);

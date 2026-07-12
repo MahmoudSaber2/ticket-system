@@ -1,12 +1,12 @@
 export const dashboardRoutes = [
-    { path: "/dashboard", label: "Pannello", permission: "view_ticket_dashboard", legacyPermission: "all_tickets" },
+    { path: "/dashboard", label: "Pannello", permission: "view_ticket_dashboard" },
     { path: "/dashboard/tickets", label: "Tickets", permission: "all_tickets" },
-    { path: "/dashboard/users", label: "Aggiungi utente", permission: "all_customers" },
+    { path: "/dashboard/users", label: "Contatti", permission: "all_customers" },
     { path: "/dashboard/admins", label: "Team", permission: "all_users" },
     { path: "/dashboard/roles", label: "Ruoli", permission: "all_roles", internalOnly: true },
     { path: "/dashboard/companies", label: "Companies", permission: "all_companies" },
     { path: "/dashboard/onboarding", label: "Onboarding", permission: "onboard_company", internalOnly: true },
-    { path: "/dashboard/submit", label: "Nuovo ticket", tenantOnly: true },
+    { path: "/dashboard/submit", label: "Nuovo ticket", permission: "create_ticket", legacyPermission: "all_tickets", tenantOnly: true },
 ];
 
 export function permissionNames(permissions) {

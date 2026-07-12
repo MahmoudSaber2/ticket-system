@@ -20,16 +20,28 @@ export const AdminColumnObj = ({ deleteFunction, editFunction, changeStatus }) =
         },
         {
             key: "2",
-            title: "Numero di telefono",
-            dataIndex: "phone",
+            title: "Email",
+            dataIndex: "email",
         },
         {
             key: "3",
-            title: "Indirizzo",
-            dataIndex: "address",
+            title: "Ruolo",
+            dataIndex: "roleName",
         },
         {
             key: "4",
+            title: "Azienda",
+            dataIndex: "companyName",
+            render: (value) => value || "—",
+        },
+        {
+            key: "5",
+            title: "Filiale",
+            dataIndex: "branchName",
+            render: (value) => value || "—",
+        },
+        {
+            key: "6",
             title: "Stato",
             dataIndex: "status",
             render: (value) => (
@@ -40,16 +52,16 @@ export const AdminColumnObj = ({ deleteFunction, editFunction, changeStatus }) =
             ),
         },
         {
-            key: "5",
+            key: "7",
             title: "",
             render: (_, record) => {
                 return (
                     <TableButtons
                         deleteRow={GetPermission("delete_user") ? deleteFunction : false}
-                        editRow={GetPermission("delete_user") ? editFunction : false}
+                        editRow={GetPermission("edit_user") ? editFunction : false}
                         record={record?.key}
                         status={record?.status}
-                        withStatus={true}
+                        withStatus={GetPermission("change_user_status")}
                         changeStatus={changeStatus || (() => {})}
                     />
                 );

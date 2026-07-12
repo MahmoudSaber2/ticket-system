@@ -13,12 +13,14 @@ test("tenant permissions cannot expose internal administration routes", () => {
     assert.equal(canAccessRoute(route("/dashboard/roles"), tenantSession), false);
 });
 
-test("dashboard accepts canonical and legacy compatible permissions", () => {
+test("dashboard requires its canonical reporting permission", () => {
     assert.equal(canAccessRoute(route("/dashboard"), { accountType: "internal", permissions: [{ name: "view_ticket_dashboard" }] }), true);
-    assert.equal(canAccessRoute(route("/dashboard"), { accountType: "tenant", permissions: [{ name: "all_tickets" }] }), true);
+    assert.equal(canAccessRoute(route("/dashboard"), { accountType: "tenant", permissions: [{ name: "all_tickets" }] }), false);
 });
 
 test("ticket submission is visible only to authenticated tenant sessions", () => {
-    assert.equal(canAccessRoute(route("/dashboard/submit"), { accountType: "tenant", permissions: [] }), true);
-    assert.equal(canAccessRoute(route("/dashboard/submit"), { accountType: "internal", permissions: [] }), false);
+    const permission = [{ name: "create_ticket" }];
+    assert.equal(canAccessRoute(route("/dashboard/submit"), { accountType: "tenant", permissions: permission }), true);
+    assert.equal(canAccessRoute(route("/dashboard/submit"), { accountType: "tenant", permissions: [] }), false);
+    assert.equal(canAccessRoute(route("/dashboard/submit"), { accountType: "internal", permissions: permission }), false);
 });

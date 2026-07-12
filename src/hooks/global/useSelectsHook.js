@@ -30,3 +30,21 @@ export const useTicketSubmissionOptions = () => useQuery({
         return data;
     },
 });
+
+export const useTeamOptions = () => useQuery({
+    queryKey: ["team-options"],
+    queryFn: async () => {
+        const { data } = await axios.get("selects?allSelects=companies,roles");
+        return data;
+    },
+});
+
+export const useTeamBranches = (companyId, enabled) => useQuery({
+    queryKey: ["team-branches", companyId],
+    enabled,
+    queryFn: async () => {
+        const companyFilter = companyId ? `=${companyId}` : "";
+        const { data } = await axios.get(`selects?allSelects=branches${companyFilter}`);
+        return data;
+    },
+});

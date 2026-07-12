@@ -1,4 +1,4 @@
-export const AdminObj = ({ roles, inEditMode }) => {
+export const AdminObj = ({ inEditMode }) => {
     return [
         {
             name: "userId",
@@ -50,25 +50,6 @@ export const AdminObj = ({ roles, inEditMode }) => {
             type: "text",
             placeholder: "Inserisci il indirizzo",
             rules: { required: true, message: "Inserisci il indirizzo" },
-        },
-        {
-            name: "roleId",
-            label: "Ruolo",
-            type: "select",
-            placeholder: "Inserisci la ruolo",
-            rules: { required: true, message: "Inserisci la ruolo" },
-            options: roles,
-        },
-        {
-            name: "status",
-            label: "Stato",
-            type: "select",
-            placeholder: "Inserisci la stato",
-            rules: { required: true, message: "Inserisci la stato" },
-            options: [
-                { label: "Attivo", value: 1 },
-                { label: "Inattivo", value: 0 },
-            ],
         },
     ];
 };
