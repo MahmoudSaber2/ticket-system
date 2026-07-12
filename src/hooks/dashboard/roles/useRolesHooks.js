@@ -34,6 +34,14 @@ export const useRoles = (pagination, setPagination, resetParamPageId) => {
     });
 };
 
+export const useRoleMatrix = () => useQuery({
+    queryKey: ["role-matrix"],
+    queryFn: async () => {
+        const { data } = await axios.get("admin/roles/matrix");
+        return data.data;
+    },
+});
+
 export const useCreateRole = (closeModel) => {
     const queryClient = new QueryClient();
 

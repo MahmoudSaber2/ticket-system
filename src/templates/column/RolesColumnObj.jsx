@@ -19,8 +19,8 @@ export const RoleColumnObj = ({ deleteFunction, editFunction, changeStatus }) =>
             render: (_, record) => {
                 return (
                     <TableButtons
-                        deleteRow={GetPermission("delete_role") ? deleteFunction : false}
-                        editRow={GetPermission("delete_role") ? editFunction : false}
+                        deleteRow={!record?.isSystem && GetPermission("delete_role") ? deleteFunction : false}
+                        editRow={!record?.isSystem && GetPermission("edit_role") ? editFunction : false}
                         record={record?.key}
                         status={record?.status}
                         withStatus={false}

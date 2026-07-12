@@ -4,7 +4,7 @@ import { Alert, Skeleton } from "antd";
 import DashboardFilters from "../../components/dashboard/DashboardFilters";
 import DistributionChart from "../../components/dashboard/DistributionChart";
 import MetricCards from "../../components/dashboard/MetricCards";
-import TicketSummaryLists from "../../components/dashboard/TicketSummaryLists";
+import TicketSummaryLists, { SlaAlerts } from "../../components/dashboard/TicketSummaryLists";
 import TrendChart from "../../components/dashboard/TrendChart";
 import { useDashboardReport } from "../../hooks/dashboard/useReportingHooks";
 import { useSessionStore } from "../../store";
@@ -34,6 +34,7 @@ const Dashboard = () => {
             {tenant?.usesBranches !== false && series.branchVolume?.length > 0 && (
                 <DistributionChart title="Volume per filiale" rows={series.branchVolume} />
             )}
+            <SlaAlerts rows={report?.slaAlerts} />
             <TicketSummaryLists oldestOpen={report?.oldestOpen} recentActivity={report?.recentActivity} />
         </main>
     );

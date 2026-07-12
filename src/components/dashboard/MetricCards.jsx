@@ -5,6 +5,8 @@ const metricLabels = {
     closed: "Chiusi",
     reopened: "Riaperti",
     overdue: "Scaduti",
+    dueSoon: "In scadenza (24h)",
+    escalated: "Escalation",
     averageResolutionHours: "Risoluzione media (ore)",
 };
 

@@ -1,12 +1,12 @@
-import React from "react";
-
-// import RolesFilter from "../../components/dash-roles/RolesFilter";
 import RolesTable from "../../components/dash-roles/RolesTable";
+import RoleMatrix from "../../components/dash-roles/RoleMatrix";
+import { useRoleMatrix } from "../../hooks/dashboard/roles/useRolesHooks";
 
 const Roles = () => {
+    const { data } = useRoleMatrix();
     return (
-        <div className="flex flex-col gap-10 pr-10">
-            {/* <RolesFilter /> */}
+        <div className="flex flex-col gap-6 pr-4 md:pr-10">
+            <RoleMatrix templates={data?.templates} />
             <RolesTable />
         </div>
     );

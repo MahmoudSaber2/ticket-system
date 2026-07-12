@@ -1,3 +1,6 @@
+import { Tag } from "antd";
+import dayjs from "dayjs";
+
 const TicketRows = ({ title, rows }) => (
     <section className="rounded-xl border bg-white p-5 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold">{title}</h2>
@@ -19,6 +22,29 @@ const TicketSummaryLists = ({ oldestOpen = [], recentActivity = [] }) => (
         <TicketRows title="Ticket aperti più vecchi" rows={oldestOpen} />
         <TicketRows title="Attività recente" rows={recentActivity} />
     </div>
+);
+
+export const SlaAlerts = ({ rows = [] }) => (
+    <section className="rounded-xl border bg-white p-5 shadow-sm" aria-labelledby="sla-alerts-title">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 id="sla-alerts-title" className="text-lg font-semibold">Avvisi SLA</h2>
+            <span className="text-sm text-slate-500">Scadenze attive ordinate per urgenza</span>
+        </div>
+        {rows.length === 0 ? <p className="text-sm text-slate-500">Nessuna scadenza attiva.</p> : (
+            <ul className="divide-y">{rows.map((ticket) => <li key={ticket.ticketId} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+                <div>
+                    <p className="font-medium text-slate-900">{ticket.ticketNumber}</p>
+                    <p className="text-slate-500">{ticket.companyName}{ticket.branchName ? ` · ${ticket.branchName}` : ""}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    {ticket.escalatedAt && <Tag color="red">Escalation inviata</Tag>}
+                    <Tag color={ticket.isOverdue ? "error" : "warning"}>
+                        {ticket.isOverdue ? "Scaduto" : "Scade"} {dayjs(ticket.dueAt).format("DD/MM/YYYY HH:mm")}
+                    </Tag>
+                </div>
+            </li>)}</ul>
+        )}
+    </section>
 );
 
 export default TicketSummaryLists;
