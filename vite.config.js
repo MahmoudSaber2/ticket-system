@@ -7,5 +7,5 @@ export default defineConfig({
     server: {
         port: 3420,
     },
-    base: "https://tickets.testingelmo.com/",
+    base: "https://tickets-sys.testingelmo.com/",
 });

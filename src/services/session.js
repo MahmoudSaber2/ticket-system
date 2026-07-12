@@ -5,7 +5,7 @@ import { createSingleFlight } from "./singleFlight";
 
 const legacyCookieNames = ["token", "profile", "permissions", "role", "logoutTime"];
 
-export const apiBaseUrl = import.meta.env.VITE_API_URL || "https://customerservicebe.testingelmo.com/api/v1/";
+export const apiBaseUrl = import.meta.env.VITE_API_URL || "https://tickets-sys-api.testingelmo.com/api/v1/";
 
 export function clearLegacyAuthCookies() {
     legacyCookieNames.forEach((name) => {
