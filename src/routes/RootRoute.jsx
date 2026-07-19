@@ -1,4 +1,4 @@
-import { Tickets, Review } from "../pages";
+import { Tickets, NewTicket, Review } from "../pages";
 import RootLayout from "../templates/RootLayout";
 import NotFound from "../components/NotFound";
 
@@ -10,6 +10,10 @@ export const RootRoute = {
         {
             index: true,
             element: <Tickets />,
+        },
+        {
+            path: "new-ticket",
+            element: <NewTicket />,
         },
         {
             path: "review",

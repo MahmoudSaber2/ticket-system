@@ -6,7 +6,7 @@ import { TextInput, SelectInput, Buttons, UiContainer } from "../common";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { InboxOutlined } from "@ant-design/icons";
 import logo from "../../assets/logo.webp";
-import { useSelects, useSelects2 } from "../../hooks/global/useSelectsHook";
+import { useLegacyTicketBranches, useLegacyTicketSelects } from "../../hooks/global/useSelectsHook";
 import { GetOptions } from "../../utils/Functions";
 import { useCreateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
 
@@ -17,8 +17,8 @@ const TicketForm = () => {
 
 	const [branches, setBranches] = React.useState([]);
 	// Hooks
-	const { mutate: getBranches } = useSelects2((values) => setBranches(values));
-	const { data: selects, isLoading } = useSelects();
+	const { mutate: getBranches } = useLegacyTicketBranches((values) => setBranches(values));
+	const { data: selects, isLoading } = useLegacyTicketSelects();
 	const { mutate: create, isPending } = useCreateTicket(() => {
 		form.resetFields();
 	});
@@ -42,7 +42,10 @@ const TicketForm = () => {
 			>
 				<Component
 					allowClear
-					onChange={field?.name === "companyId" ? (e) => getBranches(e) : undefined}
+					onChange={field?.name === "companyId" ? (e) => {
+						setBranches([]);
+						if (e) getBranches(e);
+					} : undefined}
 					placeholder={field.placeholder}
 					size="large"
 					isTextArea={field?.isTextArea}

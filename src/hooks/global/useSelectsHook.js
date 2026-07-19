@@ -22,3 +22,20 @@ export const useSelects2 = (updateBranches) => {
         },
     });
 };
+
+export const useLegacyTicketSelects = () => {
+    return useQuery({
+        queryKey: ["legacyTicketSelects"],
+        queryFn: async () => {
+            const { data } = await axios.get("public/legacy-ticket-options");
+            return data;
+        },
+    });
+};
+
+export const useLegacyTicketBranches = (updateBranches) => {
+    return useMutation({
+        mutationFn: (companyId) => axios.get("public/legacy-ticket-options/branches", { params: { companyId } }),
+        onSuccess: ({ data }) => updateBranches(data),
+    });
+};

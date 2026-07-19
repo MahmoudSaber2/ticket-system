@@ -10,11 +10,16 @@ export const CustomerColumnObj = ({ deleteFunction, editFunction, changeStatus }
         },
         {
             key: "2",
+            title: "Username",
+            dataIndex: "username",
+        },
+        {
+            key: "3",
             title: "Azienda",
             dataIndex: "companyName",
         },
         {
-            key: "3",
+            key: "4",
             title: "Stato",
             dataIndex: "status",
             render: (value) => (
@@ -25,7 +30,7 @@ export const CustomerColumnObj = ({ deleteFunction, editFunction, changeStatus }
             ),
         },
         {
-            key: "4",
+            key: "5",
             title: "",
             render: (_, record) => {
                 return (

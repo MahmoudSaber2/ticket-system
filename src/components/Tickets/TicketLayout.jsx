@@ -4,11 +4,11 @@ import { Image } from "antd";
 import ticketImage from "../../assets/ticketing-system.png";
 import TicketForm from "./TicketForm";
 
-const TicketLayout = () => {
+const TicketLayout = ({ form = <TicketForm /> }) => {
     return (
         <div className="flex min-h-screen justify-between gap-4">
             <div className="flex flex-1 items-center justify-center bg-white">
-                <TicketForm />
+                {form}
             </div>
             <div className="hidden flex-1 items-center bg-white lg:flex">
                 <Image
