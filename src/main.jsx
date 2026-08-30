@@ -8,10 +8,11 @@ import App from "./App.jsx";
 import "./index.css";
 
 const queryClient = new QueryClient();
+const showReactQueryDevtools = import.meta.env.DEV && import.meta.env.VITE_ENABLE_QUERY_DEVTOOLS === "true";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<QueryClientProvider client={queryClient}>
 		<App />
-		<ReactQueryDevtools />
+		{showReactQueryDevtools && <ReactQueryDevtools />}
 	</QueryClientProvider>
 );
