@@ -9,11 +9,13 @@ import { FiExternalLink, FiFileText, FiImage } from "react-icons/fi";
 import { useTable } from "../../store";
 import { useSelects } from "../../hooks/global/useSelectsHook";
 import { useTicketLogs, useTicketsEdit, useUpdateTicket } from "../../hooks/dashboard/tickets/useTicketsHooks";
+import { useUpdateAdminTimelineStatus } from "../../hooks/dashboard/tickets/useAdminTicketTimeline";
 import { Buttons, SelectInput, TextInput, Modal } from "../common";
-import { GetOptions } from "../../utils/Functions";
+import { GetOptions, GetPermission } from "../../utils/Functions";
 import { TicketObj } from "../../templates/inputs/TicketObj";
 import { useGeminiSDK } from "../../hooks/global/useGeminiSDK";
 import { getAttachmentName, getAttachmentUrl, isImageAttachment } from "../../utils/tickets";
+import AdminTicketTimeline from "./AdminTicketTimeline";
 
 dayjs.extend(customParseFormat);
 
@@ -71,13 +73,13 @@ const openAttachmentInNewTab = (url) => {
     window.open(url, "_blank", "noopener,noreferrer");
 };
 
-const TicketModalForm = ({ closeModal }) => {
+const TicketModalForm = ({ closeModal, initialTab = "details" }) => {
     const { detailsId } = useTable();
     const [form] = Form.useForm();
     const cookies = new Cookies();
 
     const { data: selects } = useSelects();
-    const [activeTab, setActiveTab] = React.useState("details");
+    const [activeTab, setActiveTab] = React.useState(initialTab);
 
     const { data: ticketLogs = [], isLoading: isLogsLoading, isFetching: isLogsFetching, isError: isLogsError } = useTicketLogs(detailsId, activeTab === "logs");
     const { run } = useGeminiSDK();
@@ -88,8 +90,8 @@ const TicketModalForm = ({ closeModal }) => {
     const description = Form.useWatch("description", form);
 
     React.useEffect(() => {
-        setActiveTab("details");
-    }, [detailsId]);
+        setActiveTab(initialTab);
+    }, [detailsId, initialTab]);
 
     const showModal = () => {
         setIsLoading(true);
@@ -114,7 +116,7 @@ const TicketModalForm = ({ closeModal }) => {
         );
     });
 
-    useTicketsEdit(detailsId, (data) => {
+    const ticketDetailsQuery = useTicketsEdit(detailsId, (data) => {
         const values = {
             ...data,
             closedAt: data?.closedAt ? dayjs(data?.closedAt, "YYYY-MM-DD HH:mm:ss") : "",
@@ -125,6 +127,26 @@ const TicketModalForm = ({ closeModal }) => {
         form.resetFields();
         closeModal();
     });
+    const updateTimelineStatusMutation = useUpdateAdminTimelineStatus(detailsId);
+    const updateTicketPermission = GetPermission("update_ticket");
+    const canUpdateTicket = updateTicketPermission === true || Number(updateTicketPermission) === 1;
+
+    const handleTimelineStatusChange = async (status) => {
+        const currentValues = form.getFieldsValue(true);
+        const closedAt = currentValues?.closedAt?.format
+            ? currentValues.closedAt.format("YYYY-MM-DD")
+            : currentValues?.closedAt || "";
+
+        await updateTimelineStatusMutation.mutateAsync({
+            ...currentValues,
+            ticketId: detailsId,
+            status,
+            closedAt,
+            _method: "PUT",
+        });
+        form.setFieldValue("status", status);
+        await ticketDetailsQuery.refetch();
+    };
 
     const formTabContent = (
         <Form
@@ -241,6 +263,16 @@ const TicketModalForm = ({ closeModal }) => {
         </section>
     );
 
+    const timelineTabContent = (
+        <AdminTicketTimeline
+            ticketId={detailsId}
+            enabled={activeTab === "timeline"}
+            canUpdate={canUpdateTicket}
+            isUpdatingStatus={updateTimelineStatusMutation.isPending || ticketDetailsQuery.isPending}
+            onUpdateStatus={handleTimelineStatusChange}
+        />
+    );
+
     return (
         <>
             <Tabs
@@ -256,6 +288,11 @@ const TicketModalForm = ({ closeModal }) => {
                         key: "logs",
                         label: "Logs ticket",
                         children: logsTabContent,
+                    },
+                    {
+                        key: "timeline",
+                        label: "Cronologia",
+                        children: timelineTabContent,
                     },
                 ]}
             />

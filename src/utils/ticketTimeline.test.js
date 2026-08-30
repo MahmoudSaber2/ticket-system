@@ -10,6 +10,7 @@ import {
     getTimelineStatusLabel,
     getTimelineToken,
     mergeTimelineMessages,
+    timelineStatusOptions,
 } from "./ticketTimeline.js";
 
 test("getTimelineToken supports both URL parameter names and prefers timelineToken", () => {
@@ -32,6 +33,12 @@ test("timeline labels follow the customer timeline API contract", () => {
     assert.equal(getTimelineActorLabel(1), "Amministratore");
     assert.equal(getTimelineActorLabel(2), "Cliente");
     assert.equal(getTimelineStatusLabel(99), "Sconosciuto");
+    assert.deepEqual(timelineStatusOptions, [
+        { label: "Aperto", value: 0 },
+        { label: "Chiuso", value: 1 },
+        { label: "In lavorazione", value: 2 },
+        { label: "Riaperto", value: 3 },
+    ]);
 });
 
 test("mergeTimelineMessages deduplicates and orders logs by date then id", () => {
@@ -71,6 +78,18 @@ test("buildTimelineMessageFormData creates the documented multipart payload", ()
     assert.equal(formData.get("timelineToken"), "timeline-token");
     assert.equal(formData.get("message"), "Il problema persiste.");
     assert.equal(formData.getAll("attachments[]").length, 2);
+});
+
+test("buildTimelineMessageFormData omits the customer token for admin replies", () => {
+    const formData = buildTimelineMessageFormData({
+        ticketId: 1106,
+        message: "Abbiamo verificato il problema.",
+        attachments: [],
+    });
+
+    assert.equal(formData.get("ticketId"), "1106");
+    assert.equal(formData.get("message"), "Abbiamo verificato il problema.");
+    assert.equal(formData.has("timelineToken"), false);
 });
 
 test("timeline attachment detection supports images and documents", () => {

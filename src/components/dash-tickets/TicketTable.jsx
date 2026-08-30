@@ -12,6 +12,7 @@ const TicketTable = () => {
     const { pagenation, setDetailsId, setPagenation } = useTable();
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [initialTab, setInitialTab] = React.useState("details");
 
     const { data: tickets, isLoading, refetch } = useTickets({ ...pagenation, filter: filterData }, setPagenation, setDetailsId);
     const { mutate: deleteTicket } = useDeleteTicket(refetch);
@@ -19,14 +20,16 @@ const TicketTable = () => {
     // New hook for fetching all tickets for export
     const { refetch: fetchAllTickets } = useAllTickets({ filter: filterData });
 
-    const viewTicket = (id) => {
+    const openTicket = (id, tab) => {
+        setInitialTab(tab);
         setIsModalOpen(true);
         setDetailsId(id);
     };
 
     const columns = TicketColumnObj({
         deleteFunction: (id) => deleteTicket({ ticketId: id }),
-        viewFunction: (id) => viewTicket(id),
+        viewFunction: (id) => openTicket(id, "details"),
+        timelineFunction: (id) => openTicket(id, "timeline"),
     });
 
     // Function to fetch all tickets and return data for export
@@ -57,14 +60,20 @@ const TicketTable = () => {
 
             <Modal
                 isModalOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                width={900}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setDetailsId(null);
+                    setInitialTab("details");
+                }}
+                width={1100}
                 title={"Ticket details"}>
                 <TicketModalForm
+                    initialTab={initialTab}
                     closeModal={() => {
                         setIsModalOpen(false);
                         refetch();
                         setDetailsId(null);
+                        setInitialTab("details");
                     }}
                 />
             </Modal>

@@ -1,4 +1,4 @@
-import { FaCheckCircle, FaEnvelopeOpenText, FaTruckLoading, FaWindowClose } from "react-icons/fa";
+import { FaCheckCircle, FaEnvelopeOpenText, FaRedoAlt, FaTruckLoading } from "react-icons/fa";
 
 const StatusBadge = ({ statusCode, where }) => {
     const isImportant = where === "isImportant";
@@ -22,14 +22,14 @@ const StatusBadge = ({ statusCode, where }) => {
         0: isCustomer ? "Inattivo" : isImportant ? "Verde" : "Aperto",
         1: isCustomer ? "Attivo" : isImportant ? "Giallo" : "Chiuso",
         2: isImportant ? "Rosso" : "In Progress",
-        3: "è rifiutato",
+        3: "Riaperto",
     };
 
     const dynamicIcon = {
         0: isCustomer ? "" : isImportant ? "" : <FaEnvelopeOpenText />,
         1: isCustomer ? "" : isImportant ? "" : <FaCheckCircle />,
         2: isImportant ? "" : <FaTruckLoading />,
-        3: <FaWindowClose />,
+        3: <FaRedoAlt />,
     };
 
     return (

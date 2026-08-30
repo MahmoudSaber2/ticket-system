@@ -5,7 +5,7 @@ const AxiosInterceptor = ({ children }) => {
     // We still use useCookies to trigger a re-render if needed,
     // but the actual token for the request is read dynamically.
 
-    axios.defaults.baseURL = "https://customerservicebe.testingelmo.com/api/v1/";
+    axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || "https://customerservicebe.testingelmo.com/api/v1/";
     
     // It's better not to set default headers dynamically here on every render,
     // we'll let the interceptor handle it for all methods.

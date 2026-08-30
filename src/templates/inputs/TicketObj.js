@@ -1,4 +1,5 @@
 import { StatusOptions, UrgenzaOptions } from "../../utils/Functions";
+import { timelineStatusOptions } from "../../utils/ticketTimeline";
 
 export const TicketObj = ({ customes, azienda, tags, inEdit }) => {
 	return [
@@ -47,7 +48,7 @@ export const TicketObj = ({ customes, azienda, tags, inEdit }) => {
 			label: "Stato",
 			type: "select",
 			placeholder: "Inserisci la stato",
-			options: StatusOptions,
+			options: inEdit ? timelineStatusOptions : StatusOptions,
 			hidden: !inEdit,
 		},
 		{

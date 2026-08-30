@@ -1,7 +1,7 @@
 import { StatusBadge, TableButtons } from "../../components/common";
 import { GetPermission } from "../../utils/Functions";
 
-export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) => {
+export const TicketColumnObj = ({ deleteFunction, viewFunction, timelineFunction, changeStatus }) => {
     return [
         {
             key: "1",
@@ -64,6 +64,7 @@ export const TicketColumnObj = ({ deleteFunction, viewFunction, changeStatus }) 
                     <TableButtons
                         deleteRow={GetPermission("delete_ticket") ? deleteFunction : false}
                         show={GetPermission("edit_ticket") ? () => viewFunction(record?.key) : false}
+                        timeline={GetPermission("edit_ticket") ? () => timelineFunction(record?.key) : false}
                         record={record?.key}
                         status={record?.status}
                         withStatus={false}

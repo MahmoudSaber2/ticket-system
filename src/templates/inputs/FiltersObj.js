@@ -1,4 +1,5 @@
-import { StatusOptions, StatusOptions2 } from "../../utils/Functions";
+import { StatusOptions2 } from "../../utils/Functions";
+import { timelineStatusOptions } from "../../utils/ticketTimeline";
 
 export const TicketFilterInputs = ({ customes, azienda, tags }) => {
     return [
@@ -46,7 +47,7 @@ export const TicketFilterInputs = ({ customes, azienda, tags }) => {
             label: "Stato",
             type: "select",
             placeholder: "Inserisci lo stato",
-            options: StatusOptions,
+            options: timelineStatusOptions,
         },
         {
             name: "fromDate",

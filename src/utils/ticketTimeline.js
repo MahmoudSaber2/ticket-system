@@ -18,6 +18,11 @@ export const timelineActorMap = {
     2: "Cliente",
 };
 
+export const timelineStatusOptions = Object.entries(timelineStatusMap).map(([value, label]) => ({
+    label,
+    value: Number(value),
+}));
+
 export const getTimelineLabel = (map, value) => map[value] || "Sconosciuto";
 
 export const getTimelineStatusLabel = (status) => getTimelineLabel(timelineStatusMap, status);
@@ -85,7 +90,9 @@ export const buildTimelineMessageFormData = ({ ticketId, timelineToken, message,
     const formData = new FormData();
 
     formData.append("ticketId", String(ticketId));
-    formData.append("timelineToken", String(timelineToken));
+    if (timelineToken) {
+        formData.append("timelineToken", String(timelineToken));
+    }
     formData.append("message", String(message));
     attachments.forEach((attachment) => formData.append("attachments[]", attachment));
 

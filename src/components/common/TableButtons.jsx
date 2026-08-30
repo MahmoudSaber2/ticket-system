@@ -1,4 +1,4 @@
-import { Dropdown } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import { useState } from "react";
 
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -6,6 +6,7 @@ import { CiEdit, CiTrash } from "react-icons/ci";
 
 import { ConfirmModal } from "./global/ConfirmModal";
 import { FaEye } from "react-icons/fa";
+import { MessageOutlined } from "@ant-design/icons";
 
 export const TableBtnsMenu = (changeStatus, status) => {
     return [
@@ -31,7 +32,7 @@ export const TableBtnsMenu = (changeStatus, status) => {
     ];
 };
 
-const TableButtons = ({ editRow, deleteRow, show, ...props }) => {
+const TableButtons = ({ editRow, deleteRow, show, timeline, ...props }) => {
     const [open, setOpen] = useState();
 
     return (
@@ -47,14 +48,31 @@ const TableButtons = ({ editRow, deleteRow, show, ...props }) => {
                 </div>
             )}
             {show && (
-                <div className="rounded bg-slate-200/20 p-[5px]">
+                <Tooltip title="Apri dettagli">
+                    <button
+                        type="button"
+                        aria-label="Apri dettagli ticket"
+                        className="flex items-center justify-center rounded bg-slate-200/20 p-[5px]"
+                        onClick={() => show()}
+                    >
                     <FaEye
                         size={20}
                         color="#4096ff"
-                        className="cursor-pointer"
-                        onClick={() => show()}
                     />
-                </div>
+                    </button>
+                </Tooltip>
+            )}
+            {timeline && (
+                <Tooltip title="Apri cronologia">
+                    <button
+                        type="button"
+                        aria-label="Apri cronologia ticket"
+                        className="flex items-center justify-center rounded bg-slate-200/20 p-[5px] text-lg text-blue-600"
+                        onClick={timeline}
+                    >
+                        <MessageOutlined />
+                    </button>
+                </Tooltip>
             )}
             {deleteRow && (
                 <div className="rounded bg-slate-200/20 p-[5px]">
